@@ -5,25 +5,86 @@ import { HiVideoCamera } from "react-icons/hi";
 import { IoImage, IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
 import { FaSmile } from "react-icons/fa";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useMessageStore } from "../../../core/store/messageStore";
+import {
+  IAuth,
+  ICurrentChatPerson,
+  IMessage,
+  IMessageStore,
+} from "../../../core/dtos";
+import { useAuthStore } from "../../../core/store";
+import { Socket } from "socket.io-client";
 
-export default function ChatContainer() {
+export default function ChatContainer({
+  socket,
+}: {
+  socket: Socket | undefined;
+}) {
+  const messageStore = useMessageStore();
+  const authStore = useAuthStore();
+
+  useEffect(() => {
+    messageStore.fetchChats({
+      receiverId: Number(messageStore.currentChatPerson?.id),
+      access_token: authStore.access_token,
+    });
+  }, [messageStore.currentChatPerson]);
+
+  useEffect(() => {
+    socket?.on("receiveMessage", (data) => {
+      messageStore.fetchChats({
+        receiverId: Number(messageStore.currentChatPerson?.id),
+        access_token: authStore.access_token,
+      });
+      console.log(data);
+    });
+  }, []);
   return (
     <div className=" flex-1 h-screen relative">
-      <div className="absolute top-0 left-0 w-full flex flex-row items-center backdrop-blur-2xl bg-white/20">
-        <Header />
+      <div
+        className="absolute top-0 left-0 w-full flex flex-row items-center 
+          backdrop-blur-2xl bg-white/20 z-[9999] "
+      >
+        <Header
+          id={messageStore.currentChatPerson?.id}
+          username={messageStore.currentChatPerson?.username}
+        />
       </div>
-      <div className="w-full h-chat-container flex flex-col overflow-y-scroll hide-scrollbar">
-        <MessageContainer />
+      <div className="w-full h-chat-container flex flex-col overflow-y-scroll overflow-x-hidden hide-scrollbar">
+        <div className="w-full h-full min-h-[450px] flex items-center justify-center ">
+          <div className="relative w-[200px] h-[100px] flex items-center justify-center ">
+            <img
+              src="https://i.pinimg.com/564x/30/82/11/30821137c8c95196326e19b20a742d5a.jpg"
+              alt="avatar"
+              className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute right-[90px]"
+            />
+            <img
+              src="https://i.pinimg.com/564x/1a/ea/37/1aea37bfb32d4163724af7080fe84dd0.jpg"
+              alt="avatar"
+              className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute left-[90px]"
+            />
+          </div>
+        </div>
+        <MessageContainer
+          currentListMessage={messageStore?.currentListMessage}
+          authStore={authStore}
+          id={messageStore.currentChatPerson?.id}
+        />
       </div>
       <div className=" absolute bottom-0 left-0 w-full bg-white h-[60px]">
-        <InputArea />
+        <InputArea
+          authStore={authStore}
+          socket={socket}
+          receiverId={messageStore.currentChatPerson?.id}
+          messageStore={messageStore}
+        />
       </div>
     </div>
   );
 }
 
-function Header() {
+function Header({ id, username }: ICurrentChatPerson) {
   return (
     <div className="w-full flex flex-row items-center justify-between px-[16px] py-[10px] border-b border-[#bec0c3]">
       <div className="flex flex-row items-center space-x-[6px] ">
@@ -34,7 +95,7 @@ function Header() {
         />
         <div className="">
           <p className=" text-[14px] text-[#050505] leading-[18.66px]">
-            test user
+            {username}
           </p>
           <p className=" text-[12px] text-[#65676b] leading-[14.76px]">
             active
@@ -63,10 +124,44 @@ function Header() {
   );
 }
 
-function InputArea() {
+function InputArea({
+  authStore,
+  socket,
+  receiverId,
+  messageStore,
+}: {
+  authStore: IAuth;
+  socket: Socket | undefined;
+  receiverId: number | undefined;
+  messageStore: IMessageStore;
+}) {
   const [inputMessage, setInputMessage] = useState("");
   const handleTexting = (event: ChangeEvent<HTMLInputElement>) => {
     setInputMessage(event.target.value);
+  };
+
+  const handleEnter = (event: any) => {
+    if (event.code == "Enter") {
+      handleSendMessage();
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (inputMessage && receiverId) {
+      socket?.emit("sendMessage", {
+        access_token: authStore.access_token,
+        to: receiverId,
+        msg: inputMessage,
+      });
+    }
+    messageStore.pushMessageItem({
+      from: authStore.id,
+      to: receiverId,
+      msg: inputMessage,
+      createdAt: String(Date.now()),
+      id: undefined,
+    });
+    setInputMessage("");
   };
 
   return (
@@ -104,6 +199,7 @@ function InputArea() {
           className=" bg-inherit flex-1 outline-none"
           value={inputMessage}
           onChange={(event) => handleTexting(event)}
+          onKeyPress={(event) => handleEnter(event)}
         />
         <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
           <IconContext.Provider value={{ color: "#0084ff", size: "24px" }}>
@@ -112,7 +208,10 @@ function InputArea() {
         </div>
       </div>
 
-      <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all relative">
+      <div
+        className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all relative"
+        onClick={handleSendMessage}
+      >
         <div className="px-[2px]" />
         <IconContext.Provider value={{ color: "#0084ff", size: "24px" }}>
           <IoSend />
@@ -122,61 +221,119 @@ function InputArea() {
   );
 }
 
-function MessageContainer() {
+function MessageContainer({
+  currentListMessage,
+  authStore,
+  id,
+}: {
+  currentListMessage: [IMessage] | undefined;
+  authStore: IAuth;
+  id: number | undefined;
+}) {
+  const scrollRef = useRef<any>();
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentListMessage?.length]);
+
   return (
-    <div className=" w-full flex flex-col justify-end  pl-[14px] pr-[22px] space-y-1">
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
-      <LeftMessageItem />
-      <RightMessageItem />
+    <div className=" w-full h-fit flex flex-col justify-end  pl-[14px] pr-[22px]">
+      {currentListMessage?.map((message, index) => (
+        <div key={message.createdAt} ref={scrollRef}>
+          {message.from == authStore.id ? (
+            <RightMessageItem
+              message={message}
+              index={index}
+              currentListMessage={currentListMessage}
+              id={id}
+            />
+          ) : (
+            <LeftMessageItem
+              message={message}
+              index={index}
+              currentListMessage={currentListMessage}
+              id={id}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 }
 
-function LeftMessageItem() {
+function LeftMessageItem({
+  message,
+  index,
+  currentListMessage,
+  id,
+}: {
+  message: IMessage;
+  index: number;
+  currentListMessage: [IMessage];
+  id: number | undefined;
+}) {
   return (
-    <div className=" flex flex-row items-end ">
-      <img
-        src="https://i.pinimg.com/564x/7b/87/3b/7b873bd30044685ab0cb0ae442d6750f.jpg"
-        alt="avatar"
-        className=" w-[28px] h-[28px] rounded-full mx-[8px]"
-      />
-      <div className=" px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] md:max-w-[588px] max-w-full h-fit">
-        <p className="leading-[20.1px] text-[15px] w-fit ">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat
-          adipisci commodi sapiente quae architecto, recusandae odio cum ducimus
-          numquam velit rerum quidem eveniet unde vero at. Magnam voluptatum
-          doloremque ipsam? avatarLorem ipsum dolor sit amet consectetur
-          adipisicing elit. Fugiat adipisci commodi sapiente quae architecto,
-          recusandae odio cum ducimus numquam velit rerum quidem eveniet unde
-          vero at. Magnam voluptatum doloremque ipsam? avatar
+    <div className=" flex flex-row items-end justify-start">
+      {currentListMessage[index + 1]?.from == id ? (
+        <div className="hidden md:block w-[28px] h-[28px] mx-[8px]" />
+      ) : (
+        <img
+          src="https://i.pinimg.com/564x/7b/87/3b/7b873bd30044685ab0cb0ae442d6750f.jpg"
+          alt="avatar"
+          className=" w-[28px] h-[28px] rounded-full mx-[8px] md:block hidden"
+        />
+      )}
+      <div
+        className={`px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] md:max-w-[588px] max-w-full h-fit
+          ${
+            currentListMessage[index - 1]?.from == id
+              ? "rounded-tl-md mt-[1px]"
+              : "my-0.5 "
+          }
+          ${
+            currentListMessage[index + 1]?.from == id
+              ? "rounded-bl-md mb-[1px]"
+              : "my-0.5 "
+          }
+      `}
+      >
+        <p className="leading-[20.1px] text-[15px] md:max-w-[588px] max-w-full break-words">
+          {message.msg}
         </p>
       </div>
     </div>
   );
 }
 
-function RightMessageItem() {
+function RightMessageItem({
+  message,
+  index,
+  currentListMessage,
+  id,
+}: {
+  message: IMessage;
+  index: number;
+  currentListMessage: [IMessage];
+  id: number | undefined;
+}) {
   return (
     <div className=" flex flex-row items-end justify-end">
-      <div className=" px-[12px] py-[8px] rounded-[18px] bg-[#0084FF] md:max-w-[588px] max-w-full h-fit">
-        <p className="leading-[20.1px] text-[15px] w-fit text-[#fff] ">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat
-          adipisci co
+      <div
+        className={` px-[12px] py-[8px] rounded-[18px] bg-[#0084FF] md:max-w-[588px] max-w-full h-fit
+         ${
+           currentListMessage[index - 1]?.to == id
+             ? "rounded-tr-md mt-[1px]"
+             : "mt-[10px]"
+         }
+        ${
+          currentListMessage[index + 1]?.to == id
+            ? "rounded-br-md mb-[1px]"
+            : "mb-[10px]"
+        }
+      `}
+      >
+        <p className="leading-[20.1px] text-[15px] text-[#fff] md:max-w-[588px] max-w-full  break-words">
+          {message.msg}
         </p>
       </div>
     </div>

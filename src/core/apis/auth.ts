@@ -19,3 +19,16 @@ export const signin = async (data: ISignin) => {
     return error;
   }
 };
+
+export const getusers = async (token: string) => {
+  try {
+    const res = await AXIOS.get(`${subdirectory}/getusers`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

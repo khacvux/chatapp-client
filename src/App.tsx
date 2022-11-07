@@ -17,20 +17,6 @@ function App() {
         {/* <Route path="/signin" element={<SignupP} /> */}
         <Route path="/" element={<HomePage />} />
       </Routes>
-      {/* <div className=" text-red-600">
-        <p>token: {token}</p>
-        <p>email: {email}</p>
-        <button 
-          onClick={() => updateAuth({token: "3sflfjlksj", username: "John", email: "John@gmail.com"})}>
-          add
-        </button>
-
-        <button 
-          onClick={() => clearAuth()}>
-          clear
-        </button>
-        
-      </div> */}
     </BrowserRouter>
   );
 }

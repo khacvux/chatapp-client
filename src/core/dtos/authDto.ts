@@ -16,11 +16,11 @@ export interface IResAuth {
 }
 
 export interface IAuth {
-  message: String;
-  access_token: String;
-  username: String;
-  email: String;
-  id: Number | undefined;
+  message: string;
+  access_token: string;
+  username: string;
+  email: string;
+  id: number | undefined;
   fetchSignin: (data: ISignin) => void;
   clearAuth: () => void;
 }
