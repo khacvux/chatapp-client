@@ -15,6 +15,7 @@ import {
 } from "../../../core/dtos";
 import { useAuthStore } from "../../../core/store";
 import { Socket } from "socket.io-client";
+import Picker from "emoji-picker-react";
 
 export default function ChatContainer({
   socket,
@@ -52,19 +53,20 @@ export default function ChatContainer({
         />
       </div>
       <div className="w-full h-chat-container flex flex-col overflow-y-scroll overflow-x-hidden hide-scrollbar">
-        <div className="w-full h-full min-h-[450px] flex items-center justify-center ">
+        <div className="w-full h-full min-h-[450px] flex flex-col items-center justify-center ">
           <div className="relative w-[200px] h-[100px] flex items-center justify-center ">
             <img
-              src="https://i.pinimg.com/564x/30/82/11/30821137c8c95196326e19b20a742d5a.jpg"
+              src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
               alt="avatar"
               className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute right-[90px]"
             />
             <img
-              src="https://i.pinimg.com/564x/1a/ea/37/1aea37bfb32d4163724af7080fe84dd0.jpg"
+              src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
               alt="avatar"
               className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute left-[90px]"
             />
           </div>
+          <p className="text-xl py-5">Start conversation</p>
         </div>
         <MessageContainer
           currentListMessage={messageStore?.currentListMessage}
@@ -89,7 +91,7 @@ function Header({ id, username }: ICurrentChatPerson) {
     <div className="w-full flex flex-row items-center justify-between px-[16px] py-[10px] border-b border-[#bec0c3]">
       <div className="flex flex-row items-center space-x-[6px] ">
         <img
-          src="https://i.pinimg.com/564x/01/93/92/019392073918e613036ef994832da503.jpg"
+          src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
           alt="avatar"
           className=" w-[40px] h-[40px] rounded-full object-cover border-[1px] border-[#bec0c3]"
         />
@@ -136,6 +138,13 @@ function InputArea({
   messageStore: IMessageStore;
 }) {
   const [inputMessage, setInputMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleEmojiClick = (emojiObject: any) => {
+    const message = inputMessage + emojiObject.emoji;
+    setInputMessage(message);
+  };
+
   const handleTexting = (event: ChangeEvent<HTMLInputElement>) => {
     setInputMessage(event.target.value);
   };
@@ -147,25 +156,26 @@ function InputArea({
   };
 
   const handleSendMessage = () => {
-    if (inputMessage && receiverId) {
+    if (inputMessage.length && receiverId) {
       socket?.emit("sendMessage", {
         access_token: authStore.access_token,
         to: receiverId,
         msg: inputMessage,
       });
+      messageStore.pushMessageItem({
+        from: authStore.id,
+        to: receiverId,
+        msg: inputMessage,
+        createdAt: String(Date.now()),
+        id: undefined,
+      });
+      setShowEmojiPicker(false);
+      setInputMessage("");
     }
-    messageStore.pushMessageItem({
-      from: authStore.id,
-      to: receiverId,
-      msg: inputMessage,
-      createdAt: String(Date.now()),
-      id: undefined,
-    });
-    setInputMessage("");
   };
 
   return (
-    <div className=" p-[12px] flex flex-row items-center space-x-[10px]">
+    <div className=" p-[12px] flex flex-row items-center space-x-[10px] relative">
       <div className="flex flex-row items-center space-x-[2px]">
         <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
           <IconContext.Provider value={{ color: "#0084ff", size: "1.3rem" }}>
@@ -192,7 +202,7 @@ function InputArea({
         )}
       </div>
 
-      <div className="flex-1 flex flex-row items-center justify-between space-x-2 bg-[#f0f2f5] rounded-full overflow-hidden pl-[12px]">
+      <div className="flex-1 flex flex-row items-center justify-between space-x-2 bg-[#f0f2f5] rounded-full overflow-hidden pl-[12px] ">
         <input
           type="text"
           placeholder="Aa"
@@ -201,11 +211,29 @@ function InputArea({
           onChange={(event) => handleTexting(event)}
           onKeyPress={(event) => handleEnter(event)}
         />
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div
+          className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all"
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        >
           <IconContext.Provider value={{ color: "#0084ff", size: "24px" }}>
             <FaSmile />
           </IconContext.Provider>
         </div>
+
+        {!showEmojiPicker ? (
+          <></>
+        ) : (
+          <div
+            className="hidden lg:block absolute rounded-lg shadow-lg shadow-[#ccc]"
+            style={{ bottom: 55, right: 60 }}
+          >
+            <Picker
+              width={"30vw"}
+              height={"50vh"}
+              onEmojiClick={handleEmojiClick}
+            />
+          </div>
+        )}
       </div>
 
       <div
@@ -278,7 +306,7 @@ function LeftMessageItem({
         <div className="hidden md:block w-[28px] h-[28px] mx-[8px]" />
       ) : (
         <img
-          src="https://i.pinimg.com/564x/7b/87/3b/7b873bd30044685ab0cb0ae442d6750f.jpg"
+          src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
           alt="avatar"
           className=" w-[28px] h-[28px] rounded-full mx-[8px] md:block hidden"
         />
