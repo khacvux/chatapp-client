@@ -43,7 +43,7 @@ export default function Friends() {
 
 const ListFriends = () => {
   return (
-    <div className="w-full h-screen overflow-y-scroll hide-scrollbar flex flex-col items-center">
+    <div className="w-full h-full overflow-y-scroll hide-scrollbar flex flex-col items-center">
       <div className="block w-[500px] min-h-[60px] space-y-1" />
       <div className="w-full lg:w-[550px] px-10 ">
         <p className=" text-[24px] font-bold py-[12px]">Friends</p>
@@ -73,7 +73,7 @@ const ListFriends = () => {
 
 const ListResearch = () => {
   return (
-    <div className="w-full h-screen overflow-y-scroll hide-scrollbar flex flex-col items-center">
+    <div className="w-full h-full overflow-y-scroll hide-scrollbar flex flex-col items-center">
       <div className="block w-[500px] min-h-[80px] space-y-1" />
       <ResearchItem />
       <ResearchItem />

@@ -8,7 +8,7 @@ export default function Profile() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center space-y-[50px]">
       <div
-        className="w-[150px] h-[150px] overflow-hidden relative"
+        className="w-[150px] min-h-[150px] overflow-hidden relative"
         onClick={() => routerRoute.setModals(ModalTypes.uploadAvatar)}
       >
         <div className="relative z-[1]">

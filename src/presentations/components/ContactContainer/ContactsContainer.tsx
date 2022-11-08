@@ -13,9 +13,11 @@ import { RiNotification3Fill, RiUserLine } from "react-icons/ri";
 export default function ContactsContainer() {
   const [showMenu, setShowMenu] = useState<Boolean>(false);
   return (
-    <div className="w-full h-full border-r border-[#CBCDD1] flex flex-col">
-      <Header showMenu={showMenu} setShowMenu={setShowMenu} />
-      <SearchArea />
+    <div className="w-full h-full border-r border-[#CBCDD1] flex flex-col relative">
+      <div className="absolute w-full top-0 left-0 right-0 h-fit lg:h-[110px] backdrop-blur-lg bg-white/20 z-[9999]">
+        <Header showMenu={showMenu} setShowMenu={setShowMenu} />
+        <SearchArea />
+      </div>
       <ListContact />
     </div>
   );
@@ -177,9 +179,12 @@ function ListContact() {
       className="flex-1 flex flex-col space-y-[2px] overflow-y-scroll px-[8px] 
     items-start hide-scrollbar"
     >
+      <div className=" w-full min-h-[60px] lg:min-h-[110px]" />
+      <GroupItem />
       {ListContact?.map((contact, index) => (
         <ContactItems key={contact.id} contact={contact} />
       ))}
+      <div className=" w-full min-h-[40px]" />
     </div>
   );
 }
@@ -194,7 +199,7 @@ function ContactItems({ contact }: { contact: IContact }) {
           ? `bg-[#E9F2FE]`
           : `hover:bg-[#F2F2F2]`
       }  
-          w-full h-[72px] rounded-[8px] p-[8px] cursor-pointer
+          w-full h-[72px] rounded-[8px] p-[10px] cursor-pointer
           flex flex-row items-center space-x-[12px]
          `}
       onClick={() => {
@@ -208,7 +213,7 @@ function ContactItems({ contact }: { contact: IContact }) {
       <img
         src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
         alt="avatar"
-        className=" w-[56px] h-[56px] rounded-full object-cover border-[1.5px] border-[#CBCDD1]"
+        className=" w-[48px] h-[48px] rounded-full object-cover border-[1.5px] border-[#CBCDD1]"
       />
       <div className="space-y-[4px] lg:block hidden">
         <p className=" text-[14px] text-[#050505] leading-[18.66px]">
@@ -228,6 +233,61 @@ function ContactItems({ contact }: { contact: IContact }) {
             start conversation
           </p>
         )}
+      </div>
+    </div>
+  );
+}
+
+function GroupItem() {
+  return (
+    <div
+      className={`${
+        // messageStore.currentChatPerson?.id == contact.id
+        false ? `bg-[#E9F2FE]` : `hover:bg-[#F2F2F2]`
+      }  
+          w-full h-[72px] rounded-[8px] p-[10px] cursor-pointer
+          flex flex-row items-center space-x-[12px]
+         `}
+      // onClick={() => {
+      //   setCurrentRoute(CurrentRoutType.Chatbox);
+      //   messageStore.setCurrentChatPerson({
+      //     id: contact.id,
+      //     username: contact.username,
+      //   });
+      // }}
+    >
+      <div className="relative w-[48px] h-[48px]">
+        <img
+          src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
+          alt="avatar"
+          className=" w-[35px] h-[35px] rounded-full object-cover border-[2px] border-white absolute top-0 right-0"
+        />
+        <img
+          src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
+          alt="avatar"
+          className=" w-[35px] h-[35px] rounded-full object-cover border-[2px] border-white absolute bottom-0 left-0"
+        />
+      </div>
+
+      <div className="space-y-[4px] lg:block hidden">
+        <p className=" text-[14px] text-[#050505] leading-[18.66px]">
+          {/* {contact.username} */}
+          group name
+        </p>
+        {/* {contact.chat[0]?.createdAt ? (
+          <div className="flex flex-row items-center space-x-2">
+            <p className=" text-[12px] text-[#65676b] leading-[14.76px] max-w-[160px] truncate">
+              {contact.chat[0]?.msg}
+            </p>
+            <p className=" text-[10px] text-[#65676b] leading-[14.76px]">
+              • .. hours
+            </p>
+          </div>
+        ) : ( */}
+        <p className=" text-[12px] text-[#65676b] leading-[14.76px]">
+          start conversation
+        </p>
+        {/* )} */}
       </div>
     </div>
   );

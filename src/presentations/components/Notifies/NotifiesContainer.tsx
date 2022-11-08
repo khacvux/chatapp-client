@@ -3,9 +3,12 @@ import React from "react";
 export default function NotifiesContainer() {
   return (
     <div className="px-3 h-screen w-full flex justify-center ">
-      <div className="w-full lg:w-[550px] ">
-        <p className=" text-[24px] font-bold py-[12px]">Notification</p>
-        <div className="h-full w-full overflow-y-scroll hide-scrollbar">
+      <div className="w-full lg:w-[550px] relative">
+        <div className=" w-full backdrop-blur-lg bg-white/10 absolute">
+          <p className=" text-[24px] font-bold py-[12px]  ">Notification</p>
+        </div>
+        <div className="h-screen w-full overflow-y-scroll hide-scrollbar">
+        <div className="block w-[500px] min-h-[60px] space-y-1" />
           <FriendRequest />
           <FriendRequest />
           <FriendRequest />
@@ -22,6 +25,7 @@ export default function NotifiesContainer() {
           <FriendRequest />
           <FriendRequest />
           <FriendRequest />
+          <div className="block w-[500px] min-h-[40px] space-y-1" />
         </div>
       </div>
     </div>
