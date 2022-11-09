@@ -26,7 +26,7 @@ export default function Friends() {
             id="searchbox"
             type="text"
             className=" text-[15px] bg-inherit text-[#050505] pl-[6px] pr-[9px] py-[5px] outline-none cursor-text w-full
-                 lg:placeholder:text-[#050505] placeholder:text-[#f0f2f5] "
+                 placeholder:text-[#050505]  "
             placeholder="Search.."
             onChange={(event) => handleSetKey(event)}
             value={key}
@@ -45,7 +45,7 @@ const ListFriends = () => {
   return (
     <div className="w-full h-full overflow-y-scroll hide-scrollbar flex flex-col items-center">
       <div className="block w-[500px] min-h-[60px] space-y-1" />
-      <div className="w-full lg:w-[550px] px-10 ">
+      <div className="w-full md:w-[550px] px-3 md:px-10 ">
         <p className=" text-[24px] font-bold py-[12px]">Friends</p>
       </div>
       <FriendItem />

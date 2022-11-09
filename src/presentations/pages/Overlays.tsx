@@ -1,6 +1,8 @@
 import { IRouterStore, ModalTypes } from "../../core/dtos";
 import { useRouterStore } from "../../core/store";
-import UploadAvatarModel from "../components/Modals/UploadAvatarModel";
+import CreateGroupModal from "../components/Modals/CreateGroupModal";
+import PreferencesModal from "../components/Modals/PreferencesModal";
+import UploadAvatarModal from "../components/Modals/UploadAvatarModal";
 
 export default function Overlays() {
   const routerStore = useRouterStore();
@@ -9,9 +11,9 @@ export default function Overlays() {
   else
     return (
       <div
-        className="w-screen h-screen flex backdrop-blur-[8px] bg-black/5
+        className="w-screen h-screen flex backdrop-blur-[8px] bg-black/5 dark:bg-black/20
           absolute top-0 bottom-0 right-0 left-0 z-[10000] items-center justify-center"
-          onClick={() => routerStore.setModals(ModalTypes.none)}
+        onClick={() => routerStore.setModals(ModalTypes.none)}
       >
         <div onClick={(e) => e.stopPropagation()}>
           <ModalContent routerStore={routerStore} />
@@ -20,12 +22,14 @@ export default function Overlays() {
     );
 }
 
-
-
 const ModalContent = ({ routerStore }: { routerStore: IRouterStore }) => {
   switch (routerStore.modals) {
     case ModalTypes.uploadAvatar:
-      return <UploadAvatarModel />;
+      return <UploadAvatarModal />;
+    case ModalTypes.CreateGroup:
+      return <CreateGroupModal />;
+    case ModalTypes.Preferences:
+      return <PreferencesModal />;
     default:
       return <></>;
   }

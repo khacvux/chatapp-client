@@ -42,7 +42,7 @@ export default function ChatContainer({
     });
   }, []);
   return (
-    <div className=" flex-1 h-screen relative">
+    <div className=" flex-1 h-screen relative dark:bg-[#242526]">
       <div
         className="absolute top-0 left-0 w-full flex flex-row items-center 
           backdrop-blur-2xl bg-white/20 z-[9999] "
@@ -58,15 +58,16 @@ export default function ChatContainer({
             <img
               src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
               alt="avatar"
-              className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute right-[90px]"
+              className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute 
+              right-[90px] dark:border-[#242526]"
             />
             <img
               src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
               alt="avatar"
-              className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute left-[90px]"
+              className="w-[100px] h-[100px] rounded-full border-[4px] border-white absolute 
+              left-[90px] dark:border-[#242526]"
             />
           </div>
-          <p className="text-xl py-5">Start conversation</p>
         </div>
         <MessageContainer
           currentListMessage={messageStore?.currentListMessage}
@@ -88,35 +89,38 @@ export default function ChatContainer({
 
 function Header({ id, username }: ICurrentChatPerson) {
   return (
-    <div className="w-full flex flex-row items-center justify-between px-[16px] py-[10px] border-b border-[#bec0c3]">
+    <div
+      className="w-full flex flex-row items-center justify-between px-[16px] py-[10px]
+              border-b border-[#bec0c3] dark:border-[#2F3031] dark:bg-[#242526]"
+    >
       <div className="flex flex-row items-center space-x-[6px] ">
         <img
           src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
           alt="avatar"
-          className=" w-[40px] h-[40px] rounded-full object-cover border-[1px] border-[#bec0c3]"
+          className=" w-[40px] h-[40px] rounded-full object-cover border-[1px] border-[#bec0c3] dark:border-[#242526]"
         />
         <div className="">
-          <p className=" text-[14px] text-[#050505] leading-[18.66px]">
+          <p className=" text-[14px] text-[#050505] dark:text-[#b0b3b8] leading-[18.66px] truncate">
             {username}
           </p>
-          <p className=" text-[12px] text-[#65676b] leading-[14.76px]">
+          <p className=" text-[10.5px] text-[#65676b] dark:text-[#b0b3b8] leading-[14.76px]">
             active
           </p>
         </div>
       </div>
 
       <div className="flex flex-row items-center space-x-[12px]">
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
           <IconContext.Provider value={{ color: "#0084ff", size: "1.3rem" }}>
             <BsTelephoneFill />
           </IconContext.Provider>
         </div>
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
           <IconContext.Provider value={{ color: "#0084ff", size: "1.7rem" }}>
             <HiVideoCamera />
           </IconContext.Provider>
         </div>
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
           <IconContext.Provider value={{ color: "#0084ff", size: "1.4rem" }}>
             <MdInfo />
           </IconContext.Provider>
@@ -175,23 +179,23 @@ function InputArea({
   };
 
   return (
-    <div className=" p-[12px] flex flex-row items-center space-x-[10px] relative">
+    <div className=" p-[12px] flex flex-row items-center space-x-[10px] relative dark:bg-[#242526]">
       <div className="flex flex-row items-center space-x-[2px]">
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
           <IconContext.Provider value={{ color: "#0084ff", size: "1.3rem" }}>
             <BsPlusCircleFill />
           </IconContext.Provider>
         </div>
         {inputMessage ? null : (
           <div className="flex flex-row items-center space-x-[2px]">
-            <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+            <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
               <IconContext.Provider
                 value={{ color: "#0084ff", size: "1.6rem" }}
               >
                 <IoImage />
               </IconContext.Provider>
             </div>
-            <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all">
+            <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
               <IconContext.Provider
                 value={{ color: "#0084ff", size: "1.7rem" }}
               >
@@ -202,7 +206,7 @@ function InputArea({
         )}
       </div>
 
-      <div className="flex-1 flex flex-row items-center justify-between space-x-2 bg-[#f0f2f5] rounded-full overflow-hidden pl-[12px] ">
+      <div className="flex-1 flex flex-row items-center justify-between space-x-2 bg-[#f0f2f5] dark:bg-[#3A3B3C] dark:text-[#E4E6EA] rounded-full overflow-hidden pl-[12px] ">
         <input
           type="text"
           placeholder="Aa"
@@ -212,7 +216,7 @@ function InputArea({
           onKeyPress={(event) => handleEnter(event)}
         />
         <div
-          className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all"
+          className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all"
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         >
           <IconContext.Provider value={{ color: "#0084ff", size: "24px" }}>
@@ -224,7 +228,7 @@ function InputArea({
           <></>
         ) : (
           <div
-            className="hidden lg:block absolute rounded-lg shadow-lg shadow-[#ccc]"
+            className="hidden lg:block absolute rounded-lg shadow-lg shadow-[#ccc] dark:shadow-[#3A3B3C]"
             style={{ bottom: 55, right: 60 }}
           >
             <Picker
@@ -237,7 +241,7 @@ function InputArea({
       </div>
 
       <div
-        className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] rounded-full flex justify-center items-center cursor-pointer transition-all relative"
+        className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all relative"
         onClick={handleSendMessage}
       >
         <div className="px-[2px]" />
@@ -301,7 +305,7 @@ function LeftMessageItem({
   id: number | undefined;
 }) {
   return (
-    <div className=" flex flex-row items-end justify-start">
+    <div className=" flex flex-row items-center justify-start">
       {currentListMessage[index + 1]?.from == id ? (
         <div className="hidden md:block w-[28px] h-[28px] mx-[8px]" />
       ) : (
@@ -312,7 +316,8 @@ function LeftMessageItem({
         />
       )}
       <div
-        className={`px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] md:max-w-[588px] max-w-full h-fit
+        className={`px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] dark:bg-[#3E4042] 
+        md:max-w-[588px] max-w-full h-fit
           ${
             currentListMessage[index - 1]?.from == id
               ? "rounded-tl-md mt-[1px]"
@@ -325,7 +330,7 @@ function LeftMessageItem({
           }
       `}
       >
-        <p className="leading-[20.1px] text-[15px] md:max-w-[588px] max-w-full break-words">
+        <p className="leading-[20.1px] text-[15px] md:max-w-[588px] max-w-full break-words dark:text-[#E4E6EA]">
           {message.msg}
         </p>
       </div>

@@ -8,6 +8,8 @@ export enum CurrentRoutType {
 export enum ModalTypes {
   none = "NONE",
   uploadAvatar = "UPLOAD_AVATAR",
+  CreateGroup = "CREATE_GROUP",
+  Preferences = "PREFERENCES"
 }
 
 export interface IRouterStore {
