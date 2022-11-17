@@ -8,10 +8,9 @@ export interface ISignup extends ISignin {
 }
 
 export interface IResAuth {
-  status: Boolean;
-  id: number;
+  userId: number;
   username: string;
-  email: string;
+  email?: string;
   access_token: string;
 }
 
@@ -27,6 +26,14 @@ export interface IAuth {
   clearAuth: () => void;
 }
 
+export interface IUser {
+  email: string;
+  username: string;
+  id: number;
+  avatar?: string;
+  firstName?: string;
+  lastName?: string;
+}
 
 export interface ResponseGenerator {
   config?: any;

@@ -7,6 +7,7 @@ import { HiGif } from "react-icons/hi2";
 import { FaSmile } from "react-icons/fa";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useMessageStore } from "../../../core/store/messageStore";
+import { v4 as uuidv4 } from 'uuid';
 import {
   IAuth,
   ICurrentChatPerson,
@@ -16,6 +17,8 @@ import {
 import { useAuthStore } from "../../../core/store";
 import { Socket } from "socket.io-client";
 import Picker from "emoji-picker-react";
+import { useParams } from "react-router-dom";
+import { uuid } from "uuidv4";
 
 export default function ChatContainer({
   socket,
@@ -24,6 +27,7 @@ export default function ChatContainer({
 }) {
   const messageStore = useMessageStore();
   const authStore = useAuthStore();
+  const { id } = useParams() 
 
   useEffect(() => {
     messageStore.fetchChats({
@@ -32,15 +36,6 @@ export default function ChatContainer({
     });
   }, [messageStore.currentChatPerson]);
 
-  useEffect(() => {
-    socket?.on("receiveMessage", (data) => {
-      messageStore.fetchChats({
-        receiverId: Number(messageStore.currentChatPerson?.id),
-        access_token: authStore.access_token,
-      });
-      console.log(data);
-    });
-  }, []);
   return (
     <div className=" flex-1 h-screen relative dark:bg-[#242526]">
       <div
@@ -171,7 +166,7 @@ function InputArea({
         to: receiverId,
         msg: inputMessage,
         createdAt: String(Date.now()),
-        id: undefined,
+        id: Math.random()
       });
       setShowEmojiPicker(false);
       setInputMessage("");

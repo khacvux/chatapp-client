@@ -1,5 +1,16 @@
+import { deleteFriend } from "../apis";
+
 export interface IMessage {
   id: number | undefined;
+  userId?: number;
+  createdAt: string | undefined;
+  from: number | undefined;
+  to: number | undefined;
+  msg: string;
+}
+
+export interface IResMessage {
+  userId: number;
   createdAt: string | undefined;
   from: number | undefined;
   to: number | undefined;
@@ -12,17 +23,29 @@ export interface IContact {
   chat: [IMessage];
 }
 
+export interface IFriend {
+  id: number;
+  info: IInfoFriend;
+}
+
+export interface IInfoFriend {
+  id: number;
+  email?: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  avatar?: string;
+}
+
 export interface ICurrentChatPerson {
   id: number | undefined;
   username: string | undefined;
 }
 
 export interface IMessageStore {
-  listContact: [IContact] | undefined;
   currentChatPersonID: number | undefined;
   currentChatPerson: ICurrentChatPerson | undefined;
   currentListMessage: [IMessage] | undefined;
-  fetchListContact: (access_token: string) => void;
   setCurrentChatPerson: ({
     id,
     username,
@@ -37,5 +60,6 @@ export interface IMessageStore {
     access_token: string;
     receiverId: number;
   }) => void;
-  pushMessageItem: (item: IMessage) => void
+  pushMessageItem: (item: IMessage) => void;
+  clear: () => void;
 }

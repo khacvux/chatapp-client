@@ -16,10 +16,11 @@ export const useAuthStore = create<IAuth>()(
         const response: any = await signin(data);
         if (response.status == 200) {
           const decode_token: IResAuth = jwt(response.data.access_token);
+          console.log(decode_token)
           set({
             access_token: response.data.access_token,
             username: decode_token.username,
-            id: decode_token.id,
+            id: decode_token.userId,
             email: decode_token?.email || "",
             response_message: "",
           });
@@ -37,7 +38,7 @@ export const useAuthStore = create<IAuth>()(
           set({
             access_token: response.data.access_token,
             username: decode_token.username,
-            id: decode_token.id,
+            id: decode_token.userId,
             email: decode_token?.email || "",
             response_message: "",
           });
