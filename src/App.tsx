@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ThemeTypes } from "./core/dtos";
 import { useAuthStore, useFriendStore, useMessageStore } from "./core/store";
+import { useGroupMessageStore } from "./core/store/groupMessageStore";
 import { usePreferenceStore } from "./core/store/preferenceStore";
 import ChatContainer from "./presentations/components/ChatBox/ChatContainer";
+import GroupChatContainer from "./presentations/components/ChatBox/GroupChatContainer";
 import Friends from "./presentations/components/Friends/Friends";
 import NotifiesContainer from "./presentations/components/Notifies/NotifiesContainer";
 import Profile from "./presentations/components/Profile/Profile";
@@ -14,9 +16,15 @@ import SigninPage from "./presentations/pages/SigninPage";
 import SignupPage from "./presentations/pages/SignupPage";
 import { BASE_URL } from "./utils";
 
+
+
+const audio = new Audio("/messenger_web.mp3")
+
+
 function App() {
   const preferenceStore = usePreferenceStore();
-  const messageStore = useMessageStore()
+  const messageStore = useMessageStore();
+  const groupMessageStore = useGroupMessageStore();
   const socket = useRef<Socket | undefined>();
   const access_token = useAuthStore((state) => state.access_token);
   const friendStore = useFriendStore();
@@ -29,12 +37,15 @@ function App() {
         },
       });
       friendStore.fetchFriendRequests(access_token);
+      groupMessageStore.fetchMyGroups(access_token);
     }
   }, [access_token]);
 
+
   useEffect(() => {
     socket.current?.on("receiveMessage", (data) => {
-      messageStore.pushMessageItem(data.message)
+      audio.play();
+      messageStore.pushMessageItem(data.message);
     });
   }, []);
 
@@ -61,6 +72,10 @@ function App() {
             <Route
               path="/m/:id"
               element={<ChatContainer socket={socket.current} />}
+            />
+            <Route
+              path="/g/:id"
+              element={<GroupChatContainer socket={socket.current} />}
             />
             <Route path="/notifies" element={<NotifiesContainer />} />
             <Route path="/profile" element={<Profile />} />

@@ -16,7 +16,7 @@ export const useMessageStore = create<IMessageStore>()(
       },
       fetchChats: async ({ receiverId, access_token }) => {
         const response: any = await getchats({ receiverId, access_token });
-        if (response.status == 200) {
+        if (response?.status == 200) {
           set({
             currentListMessage: response.data,
           });
