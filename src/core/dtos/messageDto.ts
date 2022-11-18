@@ -25,7 +25,7 @@ export interface IContact {
 
 export interface IFriend {
   id: number;
-  info?: IInfoFriend;
+  info: IInfoFriend;
 }
 
 export interface IInfoFriend {

@@ -11,7 +11,7 @@ export default function CreateGroupModal() {
 	const setModal = useRouterStore((state) => state.setModals);
 	const setListFriends = useListFriendStore(state => state.setListFriends);
 	const setListFriendsSelected = useListFriendStore(state => state.setListFriendsSelected);
-	setListFriends([{ id: 1 }, { id: 2 }, { id: 3 }])
+	setListFriends([{ id: 1,info:{id:1,username:"1"} }, { id: 2 ,info:{id:2,username:"1"} }, { id: 3 ,info:{id:3,username:"1"} }])
 	setListFriendsSelected([])
 
 	const close = () => {
@@ -36,8 +36,6 @@ export default function CreateGroupModal() {
 			</div>
 			<TypeGroupName />
 			<FriendSearch />
-			{/* <ListFriendsSelected  listFriendsSelected={LFriendsSelected_test} updateLFriendsSelected={updateLFriendsSelected}/>
-			<ListFriends LFriends={LFriend_test} setLFriendsSelected={updateLFriendsSelected} checkLFriendsSelected={checkLFriendsSelected}  /> */}
 			<ListFriendsSelected  />
 			<ListFriends/>
 		</div>
@@ -97,16 +95,9 @@ const ListFriends = () => {
 const FriendItem = ({ friend}: { friend:IFriend}) => {
 	const pushListFriendsSelected = useListFriendStore(state =>state.pushListFriendsSelectedItem)
 	const removeListFriendsSelected = useListFriendStore(state =>state.removeListFriendsSelectedItem)
-	const [isChecked, setIsChecked] = useState(false);
-	let checked = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-		// setIsChecked(checkLFriendsSelected(friend))
-		setIsChecked(!isChecked)
-		if (!isChecked) {
-			pushListFriendsSelected(friend)
-		} else {
-			removeListFriendsSelected(friend)
-		}
-		console.log(isChecked);
+	let checked = (e:any) => {
+		e.preventDefault()
+		pushListFriendsSelected(friend)
 	};
 	return (
 		<label
@@ -120,12 +111,11 @@ const FriendItem = ({ friend}: { friend:IFriend}) => {
 			/>
 
 			<div className="flex-1 h-[60px] w-full border-b-[.5px] border-[#CBCDD1] flex items-center justify-between">
-				<p className=" font-normal">Username {"" + isChecked}</p>
+				<p className=" font-normal">Username </p>
 				<div className="relative">
 					<input
 						type="radio"
 						className=""
-						checked={isChecked}
 						onClick={checked}
 						readOnly
 						id={"friend-group_select_id-" + friend.id}

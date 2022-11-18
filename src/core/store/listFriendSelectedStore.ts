@@ -1,18 +1,13 @@
 import create from "zustand";
 import { IListFriendsSelectedStore } from "../dtos";
-import { useFriendStore } from "./friendStore";
+
 export const useListFriendStore = create<IListFriendsSelectedStore>((set, get) => ({
     listFriendsSelected: [],
-    listFriends: [...useFriendStore(state=>state.listFriend)],
+    listFriends: [],
     setListFriends: (listFriends) => {
         set({
             listFriends: listFriends,
         });
-    },
-    clearListFriends: () => {
-        set({
-            listFriends: []
-        })
     },
 
     setListFriendsSelected: (listFriends) => {
@@ -20,26 +15,40 @@ export const useListFriendStore = create<IListFriendsSelectedStore>((set, get) =
             listFriendsSelected: listFriends
         })
     },
-    clearListFriendsSelected: () => {
-        set({
-            listFriendsSelected: []
-        })
-    },
+
     pushListFriendsSelectedItem: (item) => {
-        const list = [...get().listFriendsSelected]
-        list.push(item)
+        const listSelected = [...get().listFriendsSelected]
+        const list = [...get().listFriends]
+
+        const index = list.findIndex(i => i.id === item.id)
+        if (index > -1) {
+            listSelected.push(item)
+            list.splice(index, 1)
+        }
         set({
-            listFriendsSelected: list
+            listFriendsSelected: listSelected,
+            listFriends: list
         })
     },
     removeListFriendsSelectedItem: (item) => {
-        const list = [...get().listFriendsSelected]
-        const index = list.findIndex(i=>i.id===item.id)
-        index>-1&&
-        list.splice(index,1)
+        const listSelected = [...get().listFriendsSelected]
+        const list = [...get().listFriends]
+
+        const index = listSelected.findIndex(i => i.id === item.id)
+        if (index > -1) {
+            listSelected.splice(index, 1)
+            list.push(item)
+        }
         set({
-            listFriendsSelected: list
+            listFriendsSelected: listSelected,
+            listFriends: list
         })
 
+    },
+    clear: () => {
+        set({
+            listFriendsSelected: [],
+            listFriends: []
+        })
     },
 }));
