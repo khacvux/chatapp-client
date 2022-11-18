@@ -1,10 +1,9 @@
 import create from "zustand";
-import { IListFriendStore } from "../dtos";
-
-export const useFriendStore = create<IListFriendStore>((set, get) => ({
-    listFriends: [],
+import { IListFriendsSelectedStore } from "../dtos";
+import { useFriendStore } from "./friendStore";
+export const useListFriendStore = create<IListFriendsSelectedStore>((set, get) => ({
     listFriendsSelected: [],
-
+    listFriends: [...useFriendStore(state=>state.listFriend)],
     setListFriends: (listFriends) => {
         set({
             listFriends: listFriends,

@@ -1,17 +1,16 @@
 import { IoClose } from "react-icons/io5";
 import { IconContext } from "react-icons";
-import { useRouterStore } from "../../../core/store";
+import { useRouterStore,useListFriendStore } from "../../../core/store";
 import { IFriend, ModalTypes } from "../../../core/dtos";
 import { IoIosSearch } from "react-icons/io";
 import "./scrollbar.css";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useFriendStore } from "../../../core/store/group_FriendStore";
 
 export default function CreateGroupModal() {
 	/// L: list
 	const setModal = useRouterStore((state) => state.setModals);
-	const setListFriends = useFriendStore(state => state.setListFriends);
-	const setListFriendsSelected = useFriendStore(state => state.setListFriendsSelected);
+	const setListFriends = useListFriendStore(state => state.setListFriends);
+	const setListFriendsSelected = useListFriendStore(state => state.setListFriendsSelected);
 	setListFriends([{ id: 1 }, { id: 2 }, { id: 3 }])
 	setListFriendsSelected([])
 	// const [LFriend_test, setLFriend_test] = useState([{ id: 1 }, { id: 2 }, { id: 3 }])
@@ -105,7 +104,7 @@ const FriendSearch = () => {
 };
 
 const ListFriends = () => {
-	const listFriends = useFriendStore(state=>state.listFriends)
+	const listFriends = useListFriendStore(state=>state.listFriends)
 
 	return (
 		<div className="w-full h-full mt-[10px] px-[15px]">
@@ -118,8 +117,8 @@ const ListFriends = () => {
 };
 
 const FriendItem = ({ friend}: { friend:IFriend}) => {
-	const pushListFriendsSelected = useFriendStore(state =>state.pushListFriendsSelectedItem)
-	const removeListFriendsSelected = useFriendStore(state =>state.removeListFriendsSelectedItem)
+	const pushListFriendsSelected = useListFriendStore(state =>state.pushListFriendsSelectedItem)
+	const removeListFriendsSelected = useListFriendStore(state =>state.removeListFriendsSelectedItem)
 	const [isChecked, setIsChecked] = useState(false);
 	let checked = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
 		// setIsChecked(checkLFriendsSelected(friend))
@@ -160,7 +159,7 @@ const FriendItem = ({ friend}: { friend:IFriend}) => {
 };
 
 const ListFriendsSelected = () => {
-	const listFriendsSelected = useFriendStore(state=>state.listFriendsSelected)
+	const listFriendsSelected = useListFriendStore(state=>state.listFriendsSelected)
 	return (
 		<div className="p-2 pl-1 flex overflow-x-auto ">
 			{listFriendsSelected.map((friend,key) => (
@@ -171,7 +170,7 @@ const ListFriendsSelected = () => {
 };
 
 const ItemFriendSelected = ({ friend}: {friend:IFriend}) => {
-	const removeListFriendsSelected = useFriendStore(state=>state.removeListFriendsSelectedItem)
+	const removeListFriendsSelected = useListFriendStore(state=>state.removeListFriendsSelectedItem)
 	const remove =(e:React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
 		e.preventDefault()
 		removeListFriendsSelected(friend)

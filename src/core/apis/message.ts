@@ -9,11 +9,8 @@ export const getchats = async ({
   access_token: string;
   receiverId: number;
 }) => {
-  const body = {
-    receiverId,
-  };
   try {
-    const res = await AXIOS.post(`${subdirectory}/getchats`, body, {
+    const res = await AXIOS.get(`${subdirectory}/${receiverId}/list`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },

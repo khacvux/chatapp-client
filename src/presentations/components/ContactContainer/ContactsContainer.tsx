@@ -1,29 +1,33 @@
-import { ChangeEvent, Dispatch, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { FaUserFriends } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { IconContext } from "react-icons";
-import { BsPencilSquare, BsGear } from "react-icons/bs";
-import { CiLogout } from "react-icons/ci";
-import { useAuthStore, useRouterStore } from "../../../core/store";
+import { useFriendStore, useRouterStore } from "../../../core/store";
 import { useMessageStore } from "../../../core/store/messageStore";
 import {
   CurrentRoutType,
-  IContact,
-  ModalTypes,
+  IFriend,
   SystemThemeTypes,
   ThemeTypes,
 } from "../../../core/dtos";
-import { RiNotification3Fill, RiUserLine } from "react-icons/ri";
-import { HiOutlineUserGroup } from "react-icons/hi2";
+import { RiNotification3Fill } from "react-icons/ri";
 import { usePreferenceStore } from "../../../core/store/preferenceStore";
+import { useNavigate } from "react-router-dom";
+import Menu from "./Menu";
+import { Socket } from "socket.io-client";
 
-export default function ContactsContainer() {
+
+export default function ContactsContainer({
+  socket,
+}: {
+  socket: Socket | undefined;
+}) {
   const [showMenu, setShowMenu] = useState<Boolean>(false);
   return (
     <div className="w-full h-full border-r border-[#BEC0C3] dark:border-[#2F3031] flex flex-col relative dark:bg-[#242526]">
       <div className="absolute w-full top-0 left-0 right-0 h-fit lg:h-[110px] backdrop-blur-lg bg-white/20 dark:bg-[#242526]/20 z-[9999]">
-        <Header showMenu={showMenu} setShowMenu={setShowMenu} />
+        <Header showMenu={showMenu} setShowMenu={setShowMenu} socket={socket} />
         <SearchArea />
       </div>
       <ListContact />
@@ -34,28 +38,34 @@ export default function ContactsContainer() {
 function Header({
   showMenu,
   setShowMenu,
+  socket,
 }: {
   showMenu: Boolean;
   setShowMenu: Dispatch<Boolean>;
+  socket: Socket | undefined
 }) {
   const routerStore = useRouterStore();
   const theme = usePreferenceStore((state) => state.theme);
   const systemTheme = usePreferenceStore((state) => state.systemTheme);
+  const navigate = useNavigate();
   const toFriends = () => {
-    routerStore.setCurrentRoute(CurrentRoutType.Friends);
+    navigate("/");
     setShowMenu(false);
   };
   const toNotifies = () => {
-    routerStore.setCurrentRoute(CurrentRoutType.Notifies);
+    navigate("/notifies");
     setShowMenu(false);
   };
+
+
 
   return (
     <div className=" hidden lg:flex flex-row items-center justify-between px-[16px] pt-[12px] pb-[2px] ">
       <div className=" font-bold text-[24px] text-[#050505] dark:text-[#E4E6EA] ">
-        <p>Chat</p>
+        Chat
       </div>
       <div className="flex flex-row items-center space-x-[12px] relative z-50">
+
         <div
           className=" w-[36px] h-[36px] bg-[#f0f2f5] hover:bg-[#E9E9E9] dark:bg-[#3A3B3C]
           dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer"
@@ -125,149 +135,7 @@ function Header({
             <RiNotification3Fill />
           </IconContext.Provider>
         </div>
-      </div>
-    </div>
-  );
-}
 
-function Menu({ setShowMenu }: { setShowMenu: Dispatch<Boolean> }) {
-  const clearAuth = useAuthStore((state) => state.clearAuth);
-  const setRouter = useRouterStore((state) => state.setCurrentRoute);
-  const setModal = useRouterStore((state) => state.setModals);
-  const systemTheme = usePreferenceStore((state) => state.systemTheme);
-  const theme = usePreferenceStore((state) => state.theme);
-
-  const toProfile = (): void => {
-    setRouter(CurrentRoutType.Profile);
-    setShowMenu(false);
-  };
-
-  const toCreateGroup = (): void => {
-    setModal(ModalTypes.CreateGroup);
-    setShowMenu(false);
-  };
-
-  const toPreferences = (): void => {
-    setModal(ModalTypes.Preferences);
-    setShowMenu(false);
-  };
-
-  return (
-    <div className="flex flex-col space-y-0 dark:text-[#e4e6eb]">
-      <div
-        className=" w-[345px] py-[10px] px-[8px] bg-white dark:bg-[#242526] rounded-md
-        shadow-2xl shadow-black/20 relative transition-all "
-      >
-        <div
-          className=" p-[8px] flex flex-row items-center space-x-[8px]
-            cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
-          onClick={toPreferences}
-        >
-          <IconContext.Provider
-            value={{
-              color:
-                theme == ThemeTypes.System
-                  ? systemTheme == SystemThemeTypes.Dark
-                    ? "#e4e6eb"
-                    : "#000"
-                  : theme == ThemeTypes.Dark
-                  ? "#e4e6eb"
-                  : "#000",
-              size: "1.3rem",
-            }}
-          >
-            <BsGear />
-          </IconContext.Provider>
-          <p>Preferences</p>
-        </div>
-        <div
-          className=" p-[8px] flex flex-row items-center space-x-[8px]
-            cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
-          onClick={toProfile}
-        >
-          <IconContext.Provider
-            value={{
-              color:
-                theme == ThemeTypes.System
-                  ? systemTheme == SystemThemeTypes.Dark
-                    ? "#e4e6eb"
-                    : "#000"
-                  : theme == ThemeTypes.Dark
-                  ? "#e4e6eb"
-                  : "#000",
-              size: "1.3rem",
-            }}
-          >
-            <RiUserLine />
-          </IconContext.Provider>
-          <p>Profile</p>
-        </div>
-        <div
-          className=" p-[8px] flex flex-row items-center space-x-[8px]
-            cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
-          onClick={toCreateGroup}
-        >
-          <IconContext.Provider
-            value={{
-              color:
-                theme == ThemeTypes.System
-                  ? systemTheme == SystemThemeTypes.Dark
-                    ? "#e4e6eb"
-                    : "#000"
-                  : theme == ThemeTypes.Dark
-                  ? "#e4e6eb"
-                  : "#000",
-              size: "1.3rem",
-            }}
-          >
-            <HiOutlineUserGroup />
-          </IconContext.Provider>
-          <p>Create group chat</p>
-        </div>
-        <div
-          className=" p-[8px] flex flex-row items-center space-x-[8px]
-            cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
-        >
-          <IconContext.Provider
-            value={{
-              color:
-                theme == ThemeTypes.System
-                  ? systemTheme == SystemThemeTypes.Dark
-                    ? "#e4e6eb"
-                    : "#000"
-                  : theme == ThemeTypes.Dark
-                  ? "#e4e6eb"
-                  : "#000",
-              size: "1.3rem",
-            }}
-          >
-            <BsPencilSquare />
-          </IconContext.Provider>
-          <p>Sends</p>
-        </div>
-        <div className="w-fill h-[1px] bg-[#CED0D4] dark:bg-[#2F3031] my-[5px] mx-[15px]" />
-        <div
-          className=" p-[8px] flex flex-row items-center space-x-[8px] 
-            cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
-          onClick={() => clearAuth()}
-        >
-          <IconContext.Provider
-            value={{
-              color:
-                theme == ThemeTypes.System
-                  ? systemTheme == SystemThemeTypes.Dark
-                    ? "#e4e6eb"
-                    : "#000"
-                  : theme == ThemeTypes.Dark
-                  ? "#e4e6eb"
-                  : "#000",
-              size: "1.3rem",
-            }}
-          >
-            <CiLogout />
-          </IconContext.Provider>
-          <p>Sign out</p>
-        </div>
       </div>
     </div>
   );
@@ -317,7 +185,8 @@ function SearchArea() {
 }
 
 function ListContact() {
-  const ListContact = useMessageStore((state) => state.listContact);
+  const ListContact = useFriendStore((state) => state.listFriend);
+  const navigate = useNavigate()
   return (
     <div
       className="flex-1 flex flex-col space-y-[2px] overflow-y-scroll px-[8px] 
@@ -326,20 +195,20 @@ function ListContact() {
       <div className=" w-full min-h-[60px] lg:min-h-[110px]" />
       {/* <GroupItem /> */}
       {ListContact?.map((contact, index) => (
-        <ContactItems key={contact.id} contact={contact} />
+        <ContactItems key={contact.id} contact={contact} navigate={navigate} />
       ))}
       <div className=" w-full min-h-[40px]" />
     </div>
   );
 }
 
-function ContactItems({ contact }: { contact: IContact }) {
+function ContactItems({ contact, navigate }: { contact: IFriend, navigate: any }) {
   const messageStore = useMessageStore();
   const setCurrentRoute = useRouterStore((state) => state.setCurrentRoute);
   return (
     <div
       className={`${
-        messageStore.currentChatPerson?.id == contact.id
+        messageStore.currentChatPerson?.id == contact.info.id
           ? `bg-[#E9F2FE] dark:bg-[#252F3C]`
           : `hover:bg-[#F2F2F2] dark:hover:bg-[#38393A]`
       }  
@@ -347,10 +216,11 @@ function ContactItems({ contact }: { contact: IContact }) {
           flex flex-row items-center space-x-[12px]
          `}
       onClick={() => {
-        setCurrentRoute(CurrentRoutType.Chatbox);
+        // setCurrentRoute(CurrentRoutType.Chatbox);
+        navigate(`/m/${contact.id}`)
         messageStore.setCurrentChatPerson({
-          id: contact.id,
-          username: contact.username,
+          id: contact.info.id,
+          username: contact.info.username,
         });
       }}
     >
@@ -361,9 +231,9 @@ function ContactItems({ contact }: { contact: IContact }) {
       />
       <div className="space-y-[4px] lg:block hidden">
         <p className=" text-[14px] text-[#050505] leading-[18.66px] dark:text-[#e4e6eb]">
-          {contact.username}
+          {contact.info.username}
         </p>
-        {contact.chat[0]?.createdAt ? (
+        {/* {contact.chat[0]?.createdAt ? (
           <div className="flex flex-row items-center space-x-2 dark:text-[#b0b3b8]">
             <p className=" text-[12px] text-[#65676b] leading-[14.76px] max-w-[160px] truncate">
               {contact.chat[0]?.msg}
@@ -376,7 +246,10 @@ function ContactItems({ contact }: { contact: IContact }) {
           <p className=" text-[12px] text-[#65676b] leading-[14.76px] dark:text-[#b0b3b8] ">
             start conversation
           </p>
-        )}
+        )} */}
+        <p className=" text-[12px] text-[#65676b] leading-[14.76px] dark:text-[#b0b3b8] ">
+          Start conversation
+        </p>
       </div>
     </div>
   );

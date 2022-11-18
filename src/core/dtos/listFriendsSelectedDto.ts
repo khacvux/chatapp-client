@@ -1,11 +1,7 @@
-export interface IFriend{
-    id:number
-}
-
-
-export interface IListFriendStore{
-    listFriends: IFriend[]|[]
+import { IFriend } from "./index"
+export interface IListFriendsSelectedStore{
     listFriendsSelected: IFriend[]|[]
+    listFriends:IFriend[]|[]
     
     setListFriends: (listFriends:IFriend[]) => void
     clearListFriends:()=>void
