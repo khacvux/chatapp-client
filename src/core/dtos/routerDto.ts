@@ -18,3 +18,5 @@ export interface IRouterStore {
   setModals: (type: ModalTypes) => void;
   setCurrentRoute: (route: CurrentRoutType) => void;
 }
+
+

@@ -1,0 +1,14 @@
+::-webkit-scrollbar{
+    height: 6.5px;
+}
+
+.scrollbar_firefox{
+    scrollbar-width: 6.5px;
+    scrollbar-track-color: transparent;
+    scrollbar-color: #dddddd;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color: #dddddd;
+    border-radius: 9999px;
+}
