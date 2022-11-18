@@ -13,28 +13,6 @@ export default function CreateGroupModal() {
 	const setListFriendsSelected = useListFriendStore(state => state.setListFriendsSelected);
 	setListFriends([{ id: 1 }, { id: 2 }, { id: 3 }])
 	setListFriendsSelected([])
-	// const [LFriend_test, setLFriend_test] = useState([{ id: 1 }, { id: 2 }, { id: 3 }])
-	// let [LFriendsSelected_test,setLFriendsSelected_test] = useState<{ id: number }[]>([])
-	
-	// const checkLFriendsSelected = (friend:{id:number})=>{
-	// 	if(LFriendsSelected_test.findIndex(i=>i.id===friend.id)>-1) return true
-	// 	else return false
-	// }
-
-	// const updateLFriendsSelected = async(friend:{id:number},add:boolean=true)=>{
-	// 	const temp = [...LFriendsSelected_test]
-	// 	if (add) {
-	// 		temp.push(friend)
-	// 		setLFriendsSelected_test(temp)
-	// 	}else {
-	// 		const index = temp.findIndex(i => i.id === friend.id)
-	// 		console.log(index)
-	// 		if (index != undefined && index > -1) {
-	// 			temp.splice(index, 1);
-	// 		}
-	// 		setLFriendsSelected_test(temp)
-	// 	}
-	// }
 
 	const close = () => {
 		setModal(ModalTypes.none);
