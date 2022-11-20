@@ -94,7 +94,6 @@ const ListFriends = () => {
 
 const FriendItem = ({ friend}: { friend:IFriend}) => {
 	const pushListFriendsSelected = useListFriendStore(state =>state.pushListFriendsSelectedItem)
-	const removeListFriendsSelected = useListFriendStore(state =>state.removeListFriendsSelectedItem)
 	let checked = (e:any) => {
 		e.preventDefault()
 		pushListFriendsSelected(friend)
