@@ -33,7 +33,7 @@ export interface IGroup {
 }
 
 export interface IGroupMessageStore {
-  currentListGroupMessage: [IGroupMessage] | undefined;
-  myGroups: [IGroup] | undefined;
+  currentListGroupMessage: IGroupMessage[] | [];
+  myGroups: IGroup[] | [];
   fetchMyGroups: (access_token: string) => void;
 }

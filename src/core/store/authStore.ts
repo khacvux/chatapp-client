@@ -2,7 +2,7 @@ import create from "zustand";
 import jwt from "jwt-decode";
 import { persist } from "zustand/middleware";
 import { signin, signup } from "../apis";
-import { IAuth, IResAuth } from "../dtos";
+import { IAuth, IResAuth, IReturnAuth } from "../dtos";
 
 export const useAuthStore = create<IAuth>()(
   persist(
@@ -14,19 +14,17 @@ export const useAuthStore = create<IAuth>()(
       id: undefined,
       fetchSignin: async (data) => {
         const response: any = await signin(data);
+        console.log(response)
         if (response.status == 200) {
-          const decode_token: IResAuth = jwt(response.data.access_token);
-          console.log(decode_token)
           set({
             access_token: response.data.access_token,
-            username: decode_token.username,
-            id: decode_token.userId,
-            email: decode_token?.email || "",
+            username: response.data.username,
+            id: response.data.id,
             response_message: "",
           });
         } else {
           set({
-            response_message: "Error",
+            response_message: response.data.msg? response.data.msg : "Eror",
           });
         }
       },
@@ -34,12 +32,10 @@ export const useAuthStore = create<IAuth>()(
         const response: any = await signup(data);
         console.log(response);
         if (response.status == 201) {
-          const decode_token: IResAuth = jwt(response.data.access_token);
           set({
             access_token: response.data.access_token,
-            username: decode_token.username,
-            id: decode_token.userId,
-            email: decode_token?.email || "",
+            username: response.data.username,
+            id: response.data.id,
             response_message: "",
           });
         } else {
@@ -58,6 +54,7 @@ export const useAuthStore = create<IAuth>()(
           access_token: "",
           username: "",
           email: "",
+          id: undefined,
         });
       },
     }),

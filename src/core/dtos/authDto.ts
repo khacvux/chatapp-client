@@ -5,14 +5,23 @@ export interface ISignin {
 
 export interface ISignup extends ISignin {
   email: string;
+  username: string;
+  password: string;
 }
 
 export interface IResAuth {
-  userId: number;
+  id: number;
   username: string;
-  email?: string;
+  email: string;
   access_token: string;
 }
+
+export interface IReturnAuth{
+  access_token:string;
+  id:number;
+  username:string
+}
+
 
 export interface IAuth {
   response_message: string;

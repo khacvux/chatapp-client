@@ -251,21 +251,21 @@ function MessageContainer({
   authStore,
   id,
 }: {
-  currentListMessage: [IMessage] | undefined;
+  currentListMessage: IMessage[];
   authStore: IAuth;
   id: number | undefined;
 }) {
   const scrollRef = useRef<any>();
-
+  console.log(currentListMessage,authStore,id)
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currentListMessage?.length]);
+  }, [currentListMessage]);
 
   return (
     <div className=" w-full h-fit flex flex-col justify-end  pl-[14px] pr-[22px]">
-      {currentListMessage?.map((message, index) => (
+      {currentListMessage.map((message, index) => (
         <div key={message.createdAt} ref={scrollRef}>
-          {message.from == authStore.id ? (
+          {message!=null&&(message.from == authStore.id ? (
             <RightMessageItem
               message={message}
               index={index}
@@ -279,7 +279,7 @@ function MessageContainer({
               currentListMessage={currentListMessage}
               id={id}
             />
-          )}
+          ))}
         </div>
       ))}
     </div>
@@ -294,7 +294,7 @@ function LeftMessageItem({
 }: {
   message: IMessage;
   index: number;
-  currentListMessage: [IMessage];
+  currentListMessage: IMessage[]|[];
   id: number | undefined;
 }) {
   return (
@@ -339,7 +339,7 @@ function RightMessageItem({
 }: {
   message: IMessage;
   index: number;
-  currentListMessage: [IMessage];
+  currentListMessage: IMessage[]|[];
   id: number | undefined;
 }) {
   return (

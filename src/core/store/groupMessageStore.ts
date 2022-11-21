@@ -7,8 +7,8 @@ import { IGroupMessageStore } from "../dtos";
 export const useGroupMessageStore = create<IGroupMessageStore>()(
   persist(
     (set, get) => ({
-      currentListGroupMessage: undefined,
-      myGroups: undefined,
+      currentListGroupMessage: [],
+      myGroups: [],
       fetchMyGroups: async (access_token) => {
         const response: any = await getGroups({ access_token });
         if (response?.status == 200) {

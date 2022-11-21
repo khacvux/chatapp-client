@@ -44,7 +44,8 @@ function App() {
 
   useEffect(() => {
     socket.current?.on("receiveMessage", (data) => {
-      audio.play();
+      // audio.play();
+      console.log(data)
       messageStore.pushMessageItem(data.message);
     });
   }, []);

@@ -217,6 +217,7 @@ function Tabbar({
 
 function ListContact({ isGroupTab }: { isGroupTab: Boolean }) {
   const ListContact = useFriendStore((state) => state.listFriend);
+  console.log(ListContact)
   const myGroups = useGroupMessageStore((state) => state.myGroups);
   const navigate = useNavigate();
   return (
@@ -259,11 +260,12 @@ function ContactItems({
          `}
       onClick={() => {
         // setCurrentRoute(CurrentRoutType.Chatbox);
-        navigate(`/m/${contact.id}`);
+        navigate(`/m/${contact.info.id}`);
         messageStore.setCurrentChatPerson({
           id: contact.info.id,
           username: contact.info.username,
         });
+        console.log(contact)
       }}
     >
       <img
