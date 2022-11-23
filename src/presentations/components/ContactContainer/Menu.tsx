@@ -2,10 +2,14 @@ import React, { Dispatch } from "react";
 import { IconContext } from "react-icons";
 import { BsGear, BsPencilSquare } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
+import { FaUserFriends } from "react-icons/fa";
+import { FiUsers } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi2";
-import { RiUserLine } from "react-icons/ri";
+import { RiNotification3Fill, RiUserLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { ModalTypes, SystemThemeTypes, ThemeTypes } from "../../../core/dtos";
+import { BiUser } from 'react-icons/bi'
+import { IoNotificationsOutline } from 'react-icons/io5'
 import {
   useAuthStore,
   useMessageStore,
@@ -41,12 +45,65 @@ export default function Menu({
     setShowMenu(false);
   };
 
+  const toFriends = () => {
+    navigate("/");
+    setShowMenu(false);
+  };
+  const toNotifies = () => {
+    navigate("/notifies");
+    setShowMenu(false);
+  };
+
   return (
     <div className="flex flex-col space-y-0 dark:text-[#e4e6eb]">
       <div
         className=" w-[345px] py-[10px] px-[8px] bg-white dark:bg-[#242526] rounded-md
           shadow-2xl shadow-black/20 relative transition-all "
       >
+        <div
+          className=" p-[8px] lg:hidden flex flex-row items-center space-x-[8px]
+          cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
+          onClick={toFriends}
+        >
+          <IconContext.Provider
+            value={{
+              color:
+                theme == ThemeTypes.System
+                  ? systemTheme == SystemThemeTypes.Dark
+                    ? "#E4E6EA"
+                    : "#000"
+                  : theme == ThemeTypes.Dark
+                  ? "#E4E6EA"
+                  : "#000",
+              size: "1.3rem",
+            }}
+          >
+            <FiUsers />
+          </IconContext.Provider>
+          <p>Friends</p>
+        </div>
+        <div
+          className=" p-[8px] flex lg:hidden flex-row items-center space-x-[8px]
+          cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] rounded-[8px] transition-all"
+          onClick={toNotifies}
+        >
+          <IconContext.Provider
+            value={{
+              color:
+                theme == ThemeTypes.System
+                  ? systemTheme == SystemThemeTypes.Dark
+                    ? "#E4E6EA"
+                    : "#000"
+                  : theme == ThemeTypes.Dark
+                  ? "#E4E6EA"
+                  : "#000",
+              size: "1.3rem",
+            }}
+          >
+            <IoNotificationsOutline />
+          </IconContext.Provider>
+          <p>Notifications</p>
+        </div>
         <div
           className=" p-[8px] flex flex-row items-center space-x-[8px]
               cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] 
@@ -88,7 +145,7 @@ export default function Menu({
               size: "1.3rem",
             }}
           >
-            <RiUserLine />
+            <BiUser />
           </IconContext.Provider>
           <p>Profile</p>
         </div>

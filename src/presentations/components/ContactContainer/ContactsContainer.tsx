@@ -6,7 +6,6 @@ import { IconContext } from "react-icons";
 import { useFriendStore, useRouterStore } from "../../../core/store";
 import { useMessageStore } from "../../../core/store/messageStore";
 import {
-  CurrentRoutType,
   IFriend,
   IGroup,
   SystemThemeTypes,
@@ -14,7 +13,7 @@ import {
 } from "../../../core/dtos";
 import { RiNotification3Fill } from "react-icons/ri";
 import { usePreferenceStore } from "../../../core/store/preferenceStore";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Menu from "./Menu";
 import { Socket } from "socket.io-client";
 import { useGroupMessageStore } from "../../../core/store/groupMessageStore";
@@ -47,6 +46,7 @@ function Header({
   setShowMenu: Dispatch<Boolean>;
   socket: Socket | undefined;
 }) {
+  const listFriendRequest = useFriendStore((state) => state.listFriendRequest);
   const theme = usePreferenceStore((state) => state.theme);
   const systemTheme = usePreferenceStore((state) => state.systemTheme);
   const navigate = useNavigate();
@@ -60,11 +60,11 @@ function Header({
   };
 
   return (
-    <div className=" hidden lg:flex flex-row items-center justify-between px-[16px] pt-[12px] pb-[2px] ">
-      <div className=" font-bold text-[24px] text-[#050505] dark:text-[#E4E6EA] ">
+    <div className="flex flex-row items-center justify-between px-[16px] pt-[12px] pb-[2px] ">
+      <div className="hidden lg:flex font-bold text-[24px] text-[#050505] dark:text-[#E4E6EA] ">
         Chat
       </div>
-      <div className="flex flex-row items-center space-x-[12px] relative z-50">
+      <div className="flex flex-row items-center justify-center w-full lg:w-fit space-x-[12px] relative z-50">
         <div
           className=" w-[36px] h-[36px] bg-[#f0f2f5] hover:bg-[#E9E9E9] dark:bg-[#3A3B3C]
           dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer"
@@ -87,13 +87,13 @@ function Header({
           </IconContext.Provider>
         </div>
         {!showMenu ? null : (
-          <div className="absolute top-[40px]">
+          <div className="absolute top-[40px] left-0">
             <Menu setShowMenu={setShowMenu} />
           </div>
         )}
         <div
-          className=" w-[36px] h-[36px] bg-[#f0f2f5] hover:bg-[#E9E9E9] dark:bg-[#3A3B3C]
-          dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer"
+          className="hidden lg:flex w-[36px] h-[36px] bg-[#f0f2f5] hover:bg-[#E9E9E9] dark:bg-[#3A3B3C]
+          dark:hover:bg-[#4E4F50] rounded-full justify-center items-center cursor-pointer"
           onClick={toFriends}
         >
           <IconContext.Provider
@@ -114,8 +114,8 @@ function Header({
         </div>
 
         <div
-          className=" w-[36px] h-[36px] bg-[#f0f2f5] hover:bg-[#E9E9E9] dark:bg-[#3A3B3C]
-          dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer"
+          className="hidden lg:flex w-[36px] h-[36px] bg-[#f0f2f5] hover:bg-[#E9E9E9] dark:bg-[#3A3B3C]
+          dark:hover:bg-[#4E4F50] rounded-full justify-center items-center cursor-pointer relative"
           onClick={toNotifies}
         >
           <IconContext.Provider
@@ -133,6 +133,12 @@ function Header({
           >
             <RiNotification3Fill />
           </IconContext.Provider>
+          {listFriendRequest.length ? (
+            <div
+              className="absolute top-[8px] right-[8px]
+             bg-red-600 w-[7px] h-[7px] rounded-full"
+            />
+          ) : null}
         </div>
       </div>
     </div>
@@ -149,7 +155,7 @@ function SearchArea() {
   };
 
   return (
-    <div className="flex flex-row items-center justify-between px-[16px] pb-[8px] mt-[10px]">
+    <div className="hidden lg:flex flex-row items-center justify-between px-[16px] mt-[10px]">
       <div
         className="w-full rounded-full bg-[#f0f2f5] dark:bg-[#3A3B3C] 
         overflow-hidden flex flex-row items-center pl-[10px]"
@@ -190,26 +196,29 @@ function Tabbar({
   setGroupTab: Dispatch<Boolean>;
 }) {
   return (
-    <div className="flex flex-row items-center px-[16px] space-x-[6px] pb-[12px]">
+    <div
+      className="flex lg:flex-row flex-col items-center justify-center lg:justify-start
+      px-[16px] lg:space-x-[6px] pb-[12px] mt-[4px]"
+    >
       <div
         className={
           !isGroupTab
-            ? "bg-[#273A51] text-[#2d88ff] px-[12px] py-[9px] rounded-[18px] cursor-pointer"
-            : " text-white px-[12px] py-[9px] rounded-[18px] cursor-pointer"
+            ? "bg-[#E7F3FF] dark:bg-[#273A51] text-[#2d88ff] px-[12px] py-[9px] rounded-[18px] cursor-pointer  mt-[4px]"
+            : "dark:text-white px-[12px] py-[9px] rounded-[18px] cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] mt-[4px]"
         }
         onClick={() => setGroupTab(false)}
       >
-        <p className="text-[14px] font-semibold leading-[18.6px]">Friends</p>
+        <p className="text-[14px] font-normal leading-[18.6px]">Friends</p>
       </div>
       <div
         className={
           isGroupTab
-            ? "bg-[#273A51] text-[#2d88ff] px-[12px] py-[9px] rounded-[18px] cursor-pointer"
-            : " text-white px-[12px] py-[9px] rounded-[18px] cursor-pointer"
+            ? "bg-[#E7F3FF] dark:bg-[#273A51] text-[#2d88ff] px-[12px] py-[9px] rounded-[18px] cursor-pointer  mt-[4px]"
+            : "dark:text-white px-[12px] py-[9px] rounded-[18px] cursor-pointer hover:bg-[#F2F2F2] dark:hover:bg-[#3A3B3C] mt-[4px]"
         }
         onClick={() => setGroupTab(true)}
       >
-        <p className=" text-[14px] font-semibold leading-[18.6px]">Groups</p>
+        <p className=" text-[14px] font-normal leading-[18.6px]">Groups</p>
       </div>
     </div>
   );
@@ -224,16 +233,24 @@ function ListContact({ isGroupTab }: { isGroupTab: Boolean }) {
       className="flex-1 flex flex-col space-y-[2px] overflow-y-scroll px-[8px] 
                 items-start hide-scrollbar"
     >
-      <div className=" w-full min-h-[60px] lg:min-h-[150px]" />
-      {!isGroupTab
-        ? ListContact?.map((contact, index) => (
+      <div className=" w-full min-h-[145px] lg:min-h-[150px]" />
+      {!isGroupTab ? (
+        ListContact.length ? (
+          ListContact?.map((contact, index) => (
             <ContactItems
               key={contact.id}
               contact={contact}
               navigate={navigate}
             />
           ))
-        : myGroups?.map((group) => <GroupItem key={group.id} group={group} />)}
+        ) : (
+          <EmptyList />
+        )
+      ) : myGroups?.length ? (
+        myGroups?.map((group) => <GroupItem key={group.id} group={group} />)
+      ) : (
+        <EmptyList />
+      )}
       <div className=" w-full min-h-[40px]" />
     </div>
   );
@@ -311,7 +328,7 @@ function GroupItem({ group }: { group: IGroup }) {
           flex flex-row items-center space-x-[12px]
          `}
       onClick={() => {
-        navigate(`g/${group.id}`);
+        navigate(`g/${group.id}`, { state: { group: group } });
       }}
     >
       <div className="relative w-[48px] h-[48px]">
@@ -351,3 +368,14 @@ function GroupItem({ group }: { group: IGroup }) {
     </div>
   );
 }
+
+function EmptyList() {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <Link to="/" className="bg-[#2d88ff] py-[5px] px-[15px] rounded-full hover:bg-[#2d88ffc2]">
+        <p className="text-black dark:text-white font-light text-[15px]">Make friends</p>
+      </Link>
+    </div>
+  )
+}
+

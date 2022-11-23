@@ -94,3 +94,21 @@ export const updateGroupDetails = async ({
     return error;
   }
 };
+
+export const getGroupMessages = async ({
+  access_token,
+  groupId,
+}: {
+  access_token: string;
+  groupId: number;
+}) => {
+  try {
+    return await AXIOS.get(`${subdirectory}/${groupId}/list`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+  } catch (error) {
+    return error;
+  }
+};

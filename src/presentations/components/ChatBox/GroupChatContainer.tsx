@@ -7,15 +7,28 @@ import { IoImage, IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
 import { FaSmile } from "react-icons/fa";
 import Picker from "emoji-picker-react";
-import { ChangeEvent, Dispatch, useRef, useState } from "react";
+import { ChangeEvent, Dispatch, useEffect, useRef, useState } from "react";
 import GroupChatInfo from "../ChatboxInfo/GroupChatInfo";
+import { useLocation } from "react-router-dom";
+import { IAuth, IGroup, IGroupMessage } from "../../../core/dtos";
+import { useAuthStore } from "../../../core/store";
+import { useGroupMessageStore } from "../../../core/store/groupMessageStore";
 
 export default function GroupChatContainer({
   socket,
 }: {
   socket: Socket | undefined;
 }) {
+  const authStore = useAuthStore();
   const [openInfo, setOpenInfo] = useState<Boolean>(false);
+  const location: any = useLocation();
+  const group: IGroup = location.state?.group;
+  const groupMessageStore = useGroupMessageStore();
+
+  useEffect(() => {
+    groupMessageStore.fetchGroupMessages(authStore.access_token, group.id);
+  }, [group.id]);
+
   return (
     <div className=" flex-1 h-screen dark:bg-[#242526] flex flex-row">
       <div className="relative flex-1">
@@ -23,12 +36,7 @@ export default function GroupChatContainer({
           className="absolute top-0 left-0 w-full flex flex-row items-center 
           backdrop-blur-2xl bg-white/20 z-[9999] "
         >
-          <Header
-            openInfo={openInfo}
-            setOpenInfo={setOpenInfo}
-            // id={messageStore.currentChatPerson?.id}
-            // username={messageStore.currentChatPerson?.username}
-          />
+          <Header openInfo={openInfo} setOpenInfo={setOpenInfo} group={group} />
         </div>
         <div className="w-full h-chat-container flex flex-col overflow-y-scroll overflow-x-hidden hide-scrollbar">
           <div className="w-full h-full min-h-[450px] flex flex-col items-center justify-center ">
@@ -48,17 +56,17 @@ export default function GroupChatContainer({
             </div>
           </div>
           <MessageContainer
-          // currentListMessage={messageStore?.currentListMessage}
-          // authStore={authStore}
-          // id={messageStore.currentChatPerson?.id}
+            currentListMessage={groupMessageStore.currentListGroupMessage}
+            authStore={authStore}
+            id={authStore.id}
           />
         </div>
         <div className=" absolute bottom-0 left-0 w-full bg-white h-[60px]">
           <InputArea
-          // authStore={authStore}
-          // socket={socket}
-          // receiverId={messageStore.currentChatPerson?.id}
-          // messageStore={messageStore}
+            authStore={authStore}
+            socket={socket}
+            groupId={group.id}
+            // id={authStore.id}
           />
         </div>
       </div>
@@ -70,9 +78,11 @@ export default function GroupChatContainer({
 function Header({
   setOpenInfo,
   openInfo,
+  group,
 }: {
   setOpenInfo: Dispatch<Boolean>;
   openInfo: Boolean;
+  group: IGroup;
 }) {
   return (
     <div
@@ -87,7 +97,7 @@ function Header({
         />
         <div className="">
           <p className=" text-[14px] text-[#050505] dark:text-[#b0b3b8] leading-[18.66px] truncate">
-            {/* {username} */}
+            {group.title ? group.title : "Untitled group"}
           </p>
           <p className=" text-[10.5px] text-[#65676b] dark:text-[#b0b3b8] leading-[14.76px]">
             active
@@ -119,18 +129,15 @@ function Header({
   );
 }
 
-// function InputArea({
-//   authStore,
-//   socket,
-//   receiverId,
-//   messageStore,
-// }: {
-//   authStore: IAuth;
-//   socket: Socket | undefined;
-//   receiverId: number | undefined;
-//   messageStore: IMessageStore;
-// })
-function InputArea() {
+function InputArea({
+  authStore,
+  socket,
+  groupId,
+}: {
+  authStore: IAuth;
+  socket: Socket | undefined;
+  groupId: number | undefined;
+}) {
   const [inputMessage, setInputMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -150,22 +157,23 @@ function InputArea() {
   };
 
   const handleSendMessage = () => {
-    // if (inputMessage.length && receiverId) {
-    //   socket?.emit("sendMessage", {
-    //     access_token: authStore.access_token,
-    //     to: receiverId,
-    //     msg: inputMessage,
-    //   });
-    //   messageStore.pushMessageItem({
-    //     from: authStore.id,
-    //     to: receiverId,
-    //     msg: inputMessage,
-    //     createdAt: String(Date.now()),
-    //     id: Math.random()
-    //   });
-    //   setShowEmojiPicker(false);
-    //   setInputMessage("");
-    // }
+    if (inputMessage.length && groupId) {
+      socket?.emit("group.message.create", {
+        access_token: authStore.access_token,
+        groupId: groupId,
+        message: inputMessage,
+      });
+      //   messageStore.pushMessageItem({
+      //     from: authStore.id,
+      //     to: receiverId,
+      //     msg: inputMessage,
+      //     createdAt: String(Date.now()),
+      //     id: Math.random()
+      //   });
+      setShowEmojiPicker(false);
+      setInputMessage("");
+      // }
+    }
   };
 
   return (
@@ -243,26 +251,26 @@ function InputArea() {
   );
 }
 
-// function MessageContainer({
-//   currentListMessage,
-//   authStore,
-//   id,
-// }: {
-//   currentListMessage: [IMessage] | undefined;
-//   authStore: IAuth;
-//   id: number | undefined;
-// })
-function MessageContainer() {
+function MessageContainer({
+  currentListMessage,
+  authStore,
+  id
+}:
+{
+  currentListMessage: [IGroupMessage] | undefined;
+  authStore: IAuth;
+  id: number | undefined;
+}) {
   const scrollRef = useRef<any>();
 
-  // useEffect(() => {
-  //   scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [currentListMessage?.length]);
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentListMessage?.length]);
 
   return (
     <div className=" w-full h-fit flex flex-col justify-end  pl-[14px] pr-[22px]">
-      {/* {currentListMessage?.map((message, index) => (
-        <div key={message.createdAt} ref={scrollRef}>
+      {currentListMessage?.map((message, index) => (
+        <div key={message.id} ref={scrollRef}>
           {message.from == authStore.id ? (
             <RightMessageItem
               message={message}
@@ -275,11 +283,89 @@ function MessageContainer() {
               message={message}
               index={index}
               currentListMessage={currentListMessage}
-              id={id}
             />
           )}
         </div>
-      ))} */}
+      ))}
+    </div>
+  );
+}
+
+
+function LeftMessageItem({
+  message,
+  index,
+  currentListMessage,
+}: {
+  message: IGroupMessage;
+  index: number;
+  currentListMessage: [IGroupMessage];
+}) {
+  return (
+    <div className=" flex flex-row items-center justify-start">
+      {currentListMessage[index + 1]?.from == message.from ? (
+        <div className="hidden md:block w-[28px] h-[28px] mx-[8px]" />
+      ) : (
+        <img
+          src="https://i.pinimg.com/564x/fe/f9/e5/fef9e5889245360d5df507be59276e17.jpg"
+          alt="avatar"
+          className=" w-[28px] h-[28px] rounded-full mx-[8px] md:block hidden"
+        />
+      )}
+      <div
+        className={`px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] dark:bg-[#3E4042] 
+        md:max-w-[588px] max-w-full h-fit
+          ${
+            currentListMessage[index - 1]?.from == message.from 
+              ? "rounded-tl-md mt-[1px]"
+              : "my-0.5 "
+          }
+          ${
+            currentListMessage[index + 1]?.from == message.from 
+              ? "rounded-bl-md mb-[1px]"
+              : "my-0.5 "
+          }
+      `}
+      >
+        <p className="leading-[20.1px] text-[15px] md:max-w-[588px] max-w-full break-words dark:text-[#E4E6EA]">
+          {message.message}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RightMessageItem({
+  message,
+  index,
+  currentListMessage,
+  id,
+}: {
+  message: IGroupMessage;
+  index: number;
+  currentListMessage: [IGroupMessage];
+  id: number | undefined;
+}) {
+  return (
+    <div className=" flex flex-row items-end justify-end">
+      <div
+        className={` px-[12px] py-[8px] rounded-[18px] bg-[#0084FF] md:max-w-[588px] max-w-full h-fit
+         ${
+           currentListMessage[index - 1]?.from == id
+             ? "rounded-tr-md mt-[1px]"
+             : "mt-[10px]"
+         }
+        ${
+          currentListMessage[index + 1]?.from == id
+            ? "rounded-br-md mb-[1px]"
+            : "mb-[10px]"
+        }
+      `}
+      >
+        <p className="leading-[20.1px] text-[15px] text-[#fff] md:max-w-[588px] max-w-full  break-words">
+          {message.message}
+        </p>
+      </div>
     </div>
   );
 }

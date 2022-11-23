@@ -251,7 +251,7 @@ function MessageContainer({
   authStore,
   id,
 }: {
-  currentListMessage: [IMessage] | undefined;
+  currentListMessage: [IMessage] | IMessage[] | undefined;
   authStore: IAuth;
   id: number | undefined;
 }) {
@@ -294,7 +294,7 @@ function LeftMessageItem({
 }: {
   message: IMessage;
   index: number;
-  currentListMessage: [IMessage];
+  currentListMessage: [IMessage] | IMessage[];
   id: number | undefined;
 }) {
   return (
@@ -339,7 +339,7 @@ function RightMessageItem({
 }: {
   message: IMessage;
   index: number;
-  currentListMessage: [IMessage];
+  currentListMessage: [IMessage] | IMessage[];
   id: number | undefined;
 }) {
   return (

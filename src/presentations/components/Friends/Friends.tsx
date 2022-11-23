@@ -18,6 +18,7 @@ import { useDebounce } from "../../../core/hooks";
 import { IoClose } from "react-icons/io5";
 import { ListFriends } from "./ListFriend";
 import ListResearch from "./ListResult";
+import FriendSkeleton from "./FriendSkeleton";
 
 export default function Friends() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -75,6 +76,7 @@ export default function Friends() {
         </div>
       </div>
       <div className="h-full w-full relative z-[1]">
+        {/* <FriendSkeleton /> */}
         <ListFriends listFriend={listFriend} />
         {!searchTerm ? null : (
           <div className="absolute top-0 bottom-0 right-0 left-0 bg-white dark:bg-[#242526] ">

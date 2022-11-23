@@ -23,12 +23,11 @@ export const useMessageStore = create<IMessageStore>()(
         }
       },
       pushMessageItem: (item) => {
-        const list = get().currentListMessage;
+        const list = get()?.currentListMessage
         list?.push(item);
         set({
           currentListMessage: list,
         });
-
       },
       clear: () => {
         set({

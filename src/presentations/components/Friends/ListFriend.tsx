@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { IFriend } from "../../../core/dtos";
 import {
   useAuthStore,
@@ -30,6 +31,17 @@ export const ListFriends = ({
 export const FriendItem = ({ item }: { item: IFriend }) => {
   const friendStore = useFriendStore();
   const access_token = useAuthStore((state) => state.access_token);
+  const setCurrentChatPerson = useMessageStore(
+    (state) => state.setCurrentChatPerson
+  );
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate(`m/${item.info.id}`);
+    setCurrentChatPerson({
+      id: item.info.id,
+      username: item.info.username,
+    });
+  };
   return (
     <div className="w-[488px] px-3 py-2 flex flex-row items-center justify-between">
       <div className="flex flex-row items-center space-x-[8px]">
@@ -49,12 +61,15 @@ export const FriendItem = ({ item }: { item: IFriend }) => {
       </div>
       <div className="flex flex-row items-center space-x-[5px]">
         <button
-          className="bg-[#E4E6EA] px-[12px] py-[2px] rounded-[8px] hover:bg-[#D8DADE]"
+          className="bg-[#E4E6EA] px-[12px] py-[2px] rounded-[8px] hover:bg-[#D8DADE] dark:bg-[#303031] dark:hover:bg-[#444546]"
           onClick={() => friendStore.deleteFriend(access_token, item.info.id)}
         >
-          <p className="text-[13px] text-black">Unfriend</p>
+          <p className="text-[13px] text-black dark:text-white">Unfriend</p>
         </button>
-        <button className="bg-blue-500 px-[12px] py-[2px] rounded-[8px] hover:bg-blue-600">
+        <button
+          className="bg-blue-500 px-[12px] py-[2px] rounded-[8px] hover:bg-blue-600"
+          onClick={handleNavigate}
+        >
           <p className="text-[13px] text-white">Chat</p>
         </button>
       </div>

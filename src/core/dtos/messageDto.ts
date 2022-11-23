@@ -45,7 +45,7 @@ export interface ICurrentChatPerson {
 export interface IMessageStore {
   currentChatPersonID: number | undefined;
   currentChatPerson: ICurrentChatPerson | undefined;
-  currentListMessage: [IMessage] | undefined;
+  currentListMessage: [IMessage] | IMessage[] | undefined;
   setCurrentChatPerson: ({
     id,
     username,

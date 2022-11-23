@@ -9,12 +9,13 @@ import {
   rejectFriendRequest,
   searchLikeUsername,
 } from "../apis";
-import { IFriendStore } from "../dtos";
+import { IFriendStore, NotifyTypes } from "../dtos";
 
 export const useFriendStore = create<IFriendStore>((set, get) => ({
   listFriend: [],
   listFriendRequest: [],
   listUserResult: [],
+  notifies: [],
   seachLikeUserame: async ({ querry, access_token }) => {
     const response: any = await searchLikeUsername({ querry, access_token });
     if (response.status == 200) {
@@ -97,6 +98,31 @@ export const useFriendStore = create<IFriendStore>((set, get) => ({
         }),
       });
     }
+  },
+  updateFriendRequests: (user) => {
+    const listFriendRequest = get().listFriendRequest;
+    set({
+      listFriendRequest: [user, ...listFriendRequest],
+    });
+  },
+  updateListFriend: (user) => {
+    const listFriend = get().listFriend;
+    set({
+      listFriend: [user, ...listFriend],
+    });
+  },
+  handleAcceptFriendRequest: (user) => {
+    const notifies = get().notifies;
+    set({
+      notifies: [
+        {
+          type: NotifyTypes.accept,
+          recieveOn: new Date(),
+          user: user,
+        },
+        ...notifies,
+      ],
+    });
   },
   clear: () => {
     set({
