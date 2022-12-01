@@ -4,7 +4,7 @@ import { MdInfo } from "react-icons/md";
 import { BsTelephoneFill, BsPlusCircleFill } from "react-icons/bs";
 import { HiVideoCamera } from "react-icons/hi";
 import { IoImage, IoSend } from "react-icons/io5";
-import { HiGif } from "react-icons/hi2";
+import { AiOutlineGif } from "react-icons/ai";
 import { FaSmile } from "react-icons/fa";
 import Picker from "emoji-picker-react";
 import { ChangeEvent, Dispatch, useEffect, useRef, useState } from "react";
@@ -194,11 +194,13 @@ function InputArea({
               </IconContext.Provider>
             </div>
             <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
-              <IconContext.Provider
-                value={{ color: "#0084ff", size: "1.7rem" }}
-              >
-                <HiGif />
-              </IconContext.Provider>
+              <div className=" bg-[#0084ff] px-[3px] py-[1px] rounded-[3px]">
+                <IconContext.Provider
+                  value={{ color: "#fff", size: "1.14rem" }}
+                >
+                  <AiOutlineGif />
+                </IconContext.Provider>
+              </div>
             </div>
           </div>
         )}
@@ -254,9 +256,8 @@ function InputArea({
 function MessageContainer({
   currentListMessage,
   authStore,
-  id
-}:
-{
+  id,
+}: {
   currentListMessage: [IGroupMessage] | undefined;
   authStore: IAuth;
   id: number | undefined;
@@ -291,7 +292,6 @@ function MessageContainer({
   );
 }
 
-
 function LeftMessageItem({
   message,
   index,
@@ -316,12 +316,12 @@ function LeftMessageItem({
         className={`px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] dark:bg-[#3E4042] 
         md:max-w-[588px] max-w-full h-fit
           ${
-            currentListMessage[index - 1]?.from == message.from 
+            currentListMessage[index - 1]?.from == message.from
               ? "rounded-tl-md mt-[1px]"
               : "my-0.5 "
           }
           ${
-            currentListMessage[index + 1]?.from == message.from 
+            currentListMessage[index + 1]?.from == message.from
               ? "rounded-bl-md mb-[1px]"
               : "my-0.5 "
           }

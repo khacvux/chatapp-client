@@ -40,8 +40,9 @@ export default function CreateGroupModal() {
         md:rounded-[20px] relative px-[30px] overflow-hidden dark:bg-[#242526]"
     >
       <div
-        className=" w-[30px] h-[30px] flex justify-center items-center absolute top-[5px] right-[5px]
-      cursor-pointer hover:bg-[#F2F2F2] rounded-full transition-all z-[10001] dark:hover:bg-[#38393A]"
+        className=" w-[30px] h-[30px] flex justify-center items-center absolute top-[5px] 
+          right-[5px] cursor-pointer hover:bg-[#F2F2F2] rounded-full transition-all 
+          z-[10001] dark:hover:bg-[#38393A]"
         onClick={close}
       >
         <IconContext.Provider
@@ -75,14 +76,14 @@ const TypeGroupName = () => {
   const [name, setName] = useState<string>("");
   const listSelected = useListFriendStore((state) => state.listFriendsSelected);
   const createGroup = useGroupMessageStore((state) => state.createGroup);
-  const access_token = useAuthStore(state => state.access_token);
+  const access_token = useAuthStore((state) => state.access_token);
   const setModal = useRouterStore((state) => state.setModals);
-  const userId = useAuthStore(state => state.id)
+  const userId = useAuthStore((state) => state.id);
   const handleCreate = () => {
     const users = listSelected.map((item) => item.info.id);
-    users.push(Number(userId))
+    users.push(Number(userId));
     createGroup(access_token, { users, title: name, avatar: "" });
-    setModal(ModalTypes.none)
+    setModal(ModalTypes.none);
   };
   return (
     <div className="flex flex-row items-center px-[15px] py-[5px] mt-[10px] space-x-2">
@@ -185,7 +186,7 @@ const ItemFriendSelected = ({ friend }: { friend: IFriend }) => {
       </div>
       <div>
         <p className="font-light text-[0.9em] dark:text-white">
-          Username{" " + friend.id}{" "}
+          {friend.info.username}
         </p>
       </div>
     </div>

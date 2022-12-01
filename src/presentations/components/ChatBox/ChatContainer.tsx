@@ -12,11 +12,18 @@ import {
   ICurrentChatPerson,
   IMessage,
   IMessageStore,
+  ModalTypes,
 } from "../../../core/dtos";
-import { useAuthStore } from "../../../core/store";
+import { useAuthStore, useRouterStore } from "../../../core/store";
 import { Socket } from "socket.io-client";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
+import { usePeerStore } from "../../../core/store/peerStore";
+import { useSocketStore } from "../../../core/store/socketStore";
+
+interface IHeader extends ICurrentChatPerson {
+  access_token: string;
+}
 
 export default function ChatContainer({
   socket,
@@ -43,6 +50,7 @@ export default function ChatContainer({
         <Header
           id={messageStore.currentChatPerson?.id}
           username={messageStore.currentChatPerson?.username}
+          access_token={authStore.access_token}
         />
       </div>
       <div className="w-full h-chat-container flex flex-col overflow-y-scroll overflow-x-hidden hide-scrollbar">
@@ -80,7 +88,22 @@ export default function ChatContainer({
   );
 }
 
-function Header({ id, username }: ICurrentChatPerson) {
+function Header({ id, username, access_token }: IHeader) {
+  const setModals = useRouterStore((state) => state.setModals);
+  const socketStore = useSocketStore()
+
+  const peerStore = usePeerStore();
+  const handleCall = async () => {
+    setModals(ModalTypes.VideoCall);
+    socketStore.createVideoCall(Number(id))
+    // console.log(peerStore.fetching);
+    // const guestPeerId = await peerStore.getPeerId(access_token, Number(id));
+    // if (!guestPeerId) {
+    //   setModals(ModalTypes.none);
+    // }
+    // console.log("Guest Peer id: ", guestPeerId);
+    // console.log(peerStore.fetching);
+  };
   return (
     <div
       className="w-full flex flex-row items-center justify-between px-[16px] py-[10px]
@@ -103,17 +126,27 @@ function Header({ id, username }: ICurrentChatPerson) {
       </div>
 
       <div className="flex flex-row items-center space-x-[12px]">
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div
+          className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] 
+          rounded-full flex justify-center items-center cursor-pointer transition-all"
+        >
           <IconContext.Provider value={{ color: "#0084ff", size: "1.3rem" }}>
             <BsTelephoneFill />
           </IconContext.Provider>
         </div>
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div
+          className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50]
+           rounded-full flex justify-center items-center cursor-pointer transition-all"
+          onClick={handleCall}
+        >
           <IconContext.Provider value={{ color: "#0084ff", size: "1.7rem" }}>
             <HiVideoCamera />
           </IconContext.Provider>
         </div>
-        <div className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50] rounded-full flex justify-center items-center cursor-pointer transition-all">
+        <div
+          className=" w-[36px] h-[36px] hover:bg-[#f0f2f5] dark:hover:bg-[#4E4F50]
+         rounded-full flex justify-center items-center cursor-pointer transition-all"
+        >
           <IconContext.Provider value={{ color: "#0084ff", size: "1.4rem" }}>
             <MdInfo />
           </IconContext.Provider>

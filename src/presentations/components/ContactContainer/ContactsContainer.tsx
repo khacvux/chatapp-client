@@ -3,7 +3,7 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import { FaUserFriends } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { IconContext } from "react-icons";
-import { useFriendStore, useRouterStore } from "../../../core/store";
+import { useFriendStore } from "../../../core/store";
 import { useMessageStore } from "../../../core/store/messageStore";
 import {
   IFriend,
@@ -373,7 +373,7 @@ function EmptyList() {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <Link to="/" className="bg-[#2d88ff] py-[5px] px-[15px] rounded-full hover:bg-[#2d88ffc2]">
-        <p className="text-black dark:text-white font-light text-[15px]">Make friends</p>
+        <p className="text-white font-light text-[15px]">Make friends</p>
       </Link>
     </div>
   )

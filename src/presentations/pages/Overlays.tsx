@@ -1,8 +1,10 @@
 import { IRouterStore, ModalTypes } from "../../core/dtos";
 import { useRouterStore } from "../../core/store";
+import AnsweringACall from "../components/Modals/AnsweringACall";
 import CreateGroupModal from "../components/Modals/CreateGroupModal";
 import PreferencesModal from "../components/Modals/PreferencesModal";
 import UploadAvatarModal from "../components/Modals/UploadAvatarModal";
+import VideoCall from "../components/Modals/VideoCall";
 
 export default function Overlays() {
   const routerStore = useRouterStore();
@@ -30,6 +32,10 @@ const ModalContent = ({ routerStore }: { routerStore: IRouterStore }) => {
       return <CreateGroupModal />;
     case ModalTypes.Preferences:
       return <PreferencesModal />;
+    case ModalTypes.VideoCall:
+      return <VideoCall />;
+    case ModalTypes.AnsweringACall:
+      return <AnsweringACall />;
     default:
       return <></>;
   }

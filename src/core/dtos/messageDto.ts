@@ -39,7 +39,7 @@ export interface IInfoFriend {
 
 export interface ICurrentChatPerson {
   id: number | undefined;
-  username: string | undefined;
+  username?: string;
 }
 
 export interface IMessageStore {
