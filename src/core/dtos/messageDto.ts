@@ -7,6 +7,7 @@ export interface IMessage {
   from: number | undefined;
   to: number | undefined;
   msg: string;
+  type?: Number;
 }
 
 export interface IResMessage {

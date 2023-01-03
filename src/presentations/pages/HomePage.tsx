@@ -5,11 +5,7 @@ import { useAuthStore, useFriendStore } from "../../core/store";
 import ContactsContainer from "../components/ContactContainer/ContactsContainer";
 import Overlays from "./Overlays";
 
-export default function HomePage({
-  socket,
-}: {
-  socket: Socket | undefined;
-}) {
+export default function HomePage({ socket }: { socket: Socket | undefined }) {
   const access_token = useAuthStore((state) => state.access_token);
   const friendStore = useFriendStore();
   const navigate = useNavigate();
@@ -29,7 +25,7 @@ export default function HomePage({
           <ContactsContainer socket={socket} />
         </div>
         <div className=" flex-1 h-full lg:w-full w-chat-container z-[1] dark:bg-[#242526]">
-          <Outlet />
+            <Outlet />
         </div>
       </div>
       <Overlays />

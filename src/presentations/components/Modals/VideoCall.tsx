@@ -163,10 +163,10 @@ const ButtonFunctions = ({
   endCall: Function;
 }) => {
   const handleEndCall = () => {
+    endCall();
     socket.current?.emit("videoCallHangUp", {
       receiverId: messageStore.currentChatPerson?.id,
     });
-    endCall();
   };
   return (
     <div className="absolute bottom-[40px] w-full flex flex-row items-center justify-center space-x-[16px] z-[10]">

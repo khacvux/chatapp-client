@@ -7,7 +7,7 @@ export default function FriendSkeleton() {
       <div className="block w-[500px] min-h-[70px] space-y-1" />
       <div className="w-[488px] px-3 py-2 flex flex-row items-center justify-between">
         <div className="flex flex-row items-center space-x-[8px]">
-          <SkeletonTheme color="#E4E6EA" highlightColor="#D8DADE" c>
+          <SkeletonTheme highlightColor="#D8DADE">
             <Skeleton circle={true} height={60} width={60} />
           </SkeletonTheme>
           <div className="flex-1 flex-col items-start justify-center">

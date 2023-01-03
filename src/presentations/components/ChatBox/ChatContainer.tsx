@@ -2,7 +2,7 @@ import { MdInfo } from "react-icons/md";
 import { BsTelephoneFill, BsPlusCircleFill } from "react-icons/bs";
 import { IconContext } from "react-icons";
 import { HiVideoCamera } from "react-icons/hi";
-import { IoImage, IoSend } from "react-icons/io5";
+import { IoImage, IoSend, IoVideocam } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
 import { FaSmile } from "react-icons/fa";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -13,13 +13,19 @@ import {
   IMessage,
   IMessageStore,
   ModalTypes,
+  SystemThemeTypes,
+  ThemeTypes,
 } from "../../../core/dtos";
-import { useAuthStore, useRouterStore } from "../../../core/store";
+import {
+  useAuthStore,
+  usePreferenceStore,
+  useRouterStore,
+} from "../../../core/store";
 import { Socket } from "socket.io-client";
 import Picker from "emoji-picker-react";
 import { useParams } from "react-router-dom";
-import { usePeerStore } from "../../../core/store/peerStore";
 import { useSocketStore } from "../../../core/store/socketStore";
+import { IoIosVideocam } from "react-icons/io";
 
 interface IHeader extends ICurrentChatPerson {
   access_token: string;
@@ -88,21 +94,13 @@ export default function ChatContainer({
   );
 }
 
-function Header({ id, username, access_token }: IHeader) {
+function Header({ id, username }: IHeader) {
   const setModals = useRouterStore((state) => state.setModals);
-  const socketStore = useSocketStore()
+  const socketStore = useSocketStore();
 
-  const peerStore = usePeerStore();
   const handleCall = async () => {
     setModals(ModalTypes.VideoCall);
-    socketStore.createVideoCall(Number(id))
-    // console.log(peerStore.fetching);
-    // const guestPeerId = await peerStore.getPeerId(access_token, Number(id));
-    // if (!guestPeerId) {
-    //   setModals(ModalTypes.none);
-    // }
-    // console.log("Guest Peer id: ", guestPeerId);
-    // console.log(peerStore.fetching);
+    socketStore.createVideoCall(Number(id));
   };
   return (
     <div
@@ -330,6 +328,8 @@ function LeftMessageItem({
   currentListMessage: [IMessage] | IMessage[];
   id: number | undefined;
 }) {
+  const theme = usePreferenceStore((state) => state.theme);
+  const systemTheme = usePreferenceStore((state) => state.systemTheme);
   return (
     <div className=" flex flex-row items-center justify-start">
       {currentListMessage[index + 1]?.from == id ? (
@@ -343,7 +343,7 @@ function LeftMessageItem({
       )}
       <div
         className={`px-[12px] py-[8px] rounded-[18px] bg-[#f0f2f5] dark:bg-[#3E4042] 
-        md:max-w-[588px] max-w-full h-fit
+        md:max-w-[588px] max-w-full h-fit flex flex-row items-center space-x-[8px]
           ${
             currentListMessage[index - 1]?.from == id
               ? "rounded-tl-md mt-[1px]"
@@ -356,7 +356,34 @@ function LeftMessageItem({
           }
       `}
       >
-        <p className="leading-[20.1px] text-[15px] md:max-w-[588px] max-w-full break-words dark:text-[#E4E6EA]">
+        {/* <div>
+
+        </div> */}
+        {message.type != 2 ? (
+          <></>
+        ) : (
+          <div className=" w-[36px] h-[36px] rounded-full bg-[#E4E6EA] dark:bg-[#4E4F50] flex items-center justify-center">
+            <IconContext.Provider
+              value={{
+                color:
+                  theme == ThemeTypes.System
+                    ? systemTheme == SystemThemeTypes.Dark
+                      ? "#E4E6EA"
+                      : "#1D1F23"
+                    : theme == ThemeTypes.Dark
+                    ? "#E4E6EA"
+                    : "#1D1F23",
+                size: "1.3rem",
+              }}
+            >
+              <IoIosVideocam />
+            </IconContext.Provider>
+          </div>
+        )}
+        <p
+          className={`leading-[20.1px] text-[15px] md:max-w-[588px] max-w-full break-words
+         dark:text-[#E4E6EA] ${message.type != 2 ? "" : " font-medium"}`}
+        >
           {message.msg}
         </p>
       </div>
@@ -375,22 +402,53 @@ function RightMessageItem({
   currentListMessage: [IMessage] | IMessage[];
   id: number | undefined;
 }) {
+  const theme = usePreferenceStore((state) => state.theme);
+  const systemTheme = usePreferenceStore((state) => state.systemTheme);
   return (
     <div className=" flex flex-row items-end justify-end">
       <div
-        className={` px-[12px] py-[8px] rounded-[18px] bg-[#0084FF] md:max-w-[588px] max-w-full h-fit
-         ${
-           currentListMessage[index - 1]?.to == id
-             ? "rounded-tr-md mt-[1px]"
-             : "mt-[10px]"
-         }
-        ${
-          currentListMessage[index + 1]?.to == id
-            ? "rounded-br-md mb-[1px]"
-            : "mb-[10px]"
-        }
+        className={` px-[12px] py-[8px] rounded-[18px] md:max-w-[588px] max-w-full
+        h-fit flex flex-row items-center space-x-[8px]
+          ${
+            message.type == 2
+              ? "bg-[#f0f2f5] dark:bg-[#3E4042]"
+              : "bg-[#0084FF]"
+          }
+          ${
+            currentListMessage[index - 1]?.to == id
+              ? "rounded-tr-md mt-[1px]"
+              : "mt-[10px]"
+          }
+          ${
+            currentListMessage[index + 1]?.to == id
+              ? "rounded-br-md mb-[1px]"
+              : "mb-[10px]"
+          }
       `}
       >
+        {message.type != 2 ? (
+          <></>
+        ) : (
+          <div
+            className={`w-[36px] h-[36px] rounded-full bg-[#E4E6EA] dark:bg-[#4E4F50] flex items-center justify-center `}
+          >
+            <IconContext.Provider
+              value={{
+                color:
+                  theme == ThemeTypes.System
+                    ? systemTheme == SystemThemeTypes.Dark
+                      ? "#E4E6EA"
+                      : "#1D1F23"
+                    : theme == ThemeTypes.Dark
+                    ? "#E4E6EA"
+                    : "#1D1F23",
+                size: "1.3rem",
+              }}
+            >
+              <IoIosVideocam />
+            </IconContext.Provider>
+          </div>
+        )}
         <p className="leading-[20.1px] text-[15px] text-[#fff] md:max-w-[588px] max-w-full  break-words">
           {message.msg}
         </p>
